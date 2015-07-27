@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_subheader"
+            android:title="@string/nav_header">
+            <menu>
+                <!-- Menu items go here -->
+            </menu>
+        </item>
+    </group>
+</menu>
