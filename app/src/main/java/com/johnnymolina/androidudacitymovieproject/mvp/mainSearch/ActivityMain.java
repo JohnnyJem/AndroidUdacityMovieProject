@@ -12,18 +12,21 @@ import android.view.MenuItem;
 
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
+import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import javax.inject.Inject;
 
 
 
-public class SearchActivityMain extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
     @Inject MovieApplication movieApplication;
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private SearchFragment retainedFragment;
+    private Result result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,9 @@ public class SearchActivityMain extends AppCompatActivity {
                         .replace(R.id.fragmentContainer, f)
                         .commit();
             }
+
+
+
     }
 
     public AppComponent getComponent(){
@@ -93,6 +99,19 @@ public class SearchActivityMain extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+
+    public void setCurrentResult(Result result){
+        result = this.result;
+        android.support.v4.app.Fragment f = new DetailsFrag();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, f)
+                .commit();
+    }
+
+    public Result getCurrentResult(){
+        return result;
     }
 
 }

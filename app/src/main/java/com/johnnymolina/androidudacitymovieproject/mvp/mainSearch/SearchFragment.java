@@ -76,7 +76,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-
+                    sendCurrentResult(searchListAdapter.getMovies().get(position));
                 }
 
                 @Override
@@ -171,5 +171,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
         }
     }
 
+public void sendCurrentResult(Result result){
+    ((ActivityMain)getActivity()).setCurrentResult(result);
+}
 
 }

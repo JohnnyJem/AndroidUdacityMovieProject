@@ -28,13 +28,13 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
     private List<Result> movies;
     Context context;
 
-    public SearchListAdapter() {
+    public SearchListAdapter( ) {
+
     }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.image) ImageView image;
-
 
         public ViewHolder(View itemView) {
             super(itemView);

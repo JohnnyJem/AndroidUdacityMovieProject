@@ -28,8 +28,6 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
         if (isViewAttached()) {
             getView().showLoading();//grabbing the view reference
         }
-
-
         //we ask the presenter to perform a search with a query
         movieService.movieSearch(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                 .delay(5, TimeUnit.SECONDS) //wait 5 seconds

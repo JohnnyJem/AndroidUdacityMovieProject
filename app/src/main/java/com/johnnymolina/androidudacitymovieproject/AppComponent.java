@@ -3,8 +3,8 @@ package com.johnnymolina.androidudacitymovieproject;
 import com.google.gson.Gson;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.DetailsFragment;
-import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.SearchActivityMain;
+import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
+import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.SearchFragment;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -28,9 +28,9 @@ import retrofit.RestAdapter;
 
 public interface AppComponent {
 
-    void inject(SearchActivityMain activity);
+    void inject(ActivityMain activity);
     void inject(SearchFragment fragment);
-    void inject(DetailsFragment fragment);
+    void inject(DetailsFrag fragment);
     void inject(MovieApplication movieApplication);
 
 

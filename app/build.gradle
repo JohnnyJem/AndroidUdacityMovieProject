@@ -24,6 +24,7 @@ android {
 repositories {
     maven {url "https://clojars.org/repo/"}
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -51,6 +52,8 @@ dependencies {
     provided 'frankiesardo:icepick-processor:' + rootProject.ext.icepickVersion
     apt 'frankiesardo:icepick-processor:' + rootProject.ext.icepickVersion
     apt 'com.hannesdorfmann.fragmentargs:processor:' + fragmentargsVersion
+    compile 'com.github.frankiesardo:auto-parcel:0.3'
+    apt 'com.github.frankiesardo:auto-parcel-processor:0.3'
     compile 'com.hannesdorfmann.mosby:core:1.2.0'
     compile 'com.hannesdorfmann.mosby:mvp:1.2.0'
     compile 'com.hannesdorfmann.mosby:viewstate:1.2.0'
