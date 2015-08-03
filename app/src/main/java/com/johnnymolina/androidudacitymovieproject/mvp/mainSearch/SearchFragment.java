@@ -76,9 +76,6 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState!=null) {
-
-        }
            if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
            }
@@ -88,7 +85,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
            recyclerView.setHasFixedSize(true);
            searchListAdapter = searchListAdapter == null ? new SearchListAdapter() : searchListAdapter;
-           recyclerView.setAdapter(searchListAdapter);
+        recyclerView.setAdapter(searchListAdapter);
 
             recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override

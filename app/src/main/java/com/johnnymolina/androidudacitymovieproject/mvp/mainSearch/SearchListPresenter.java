@@ -19,6 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
     MovieService movieService;
     List<Result> list;
+    String previousQuery;
 
     public SearchListPresenter(MovieService movieService) {
         this.movieService = movieService;
@@ -27,10 +28,13 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
     public void setMovies(){
         if (list!=null) {
             getView().setData(list);
+        }else{
+            searchForMovies(previousQuery);
         }
     }
 
     public void searchForMovies(String query) {
+        previousQuery = query;
         //update View
         if (isViewAttached()) {
             getView().showLoading();//grabbing the view reference
