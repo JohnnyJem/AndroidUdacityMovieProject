@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -77,18 +78,20 @@ public class ActivityMain extends AppCompatActivity {
        getComponent().inject(this);
 
         _subscriptions = new CompositeSubscription();
-        _subscriptions//
+        _subscriptions
                 .add(bindActivity(this, _rxBus.toObserverable())//
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
-
-                                if (event instanceof Result) {
+                                if (event instanceof Result && result==null) {
+                                    result = (Result) event;
+                                    Log.e("RX",result.getTitle().toString());
                                     getSupportFragmentManager()
                                             .beginTransaction()
                                             .replace(R.id.fragmentContainer, new DetailsFrag())
                                             .commit();
                                 }
+
                             }
                         }));
     }

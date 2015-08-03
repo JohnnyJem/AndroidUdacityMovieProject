@@ -3,6 +3,7 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +26,10 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.functions.Action1;
+import rx.observables.ConnectableObservable;
 import rx.subscriptions.CompositeSubscription;
+
+import static rx.android.app.AppObservable.bindActivity;
 import static rx.android.app.AppObservable.bindFragment;
 import static rx.android.app.AppObservable.bindSupportFragment;
 
@@ -39,6 +43,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Inject MovieService movieService;
     @Inject MovieApplication movieApplication;
     @Inject RxBus _rxBus;
+    private CompositeSubscription _subscriptions;
 
     @Bind(R.id.detail_title) TextView title;
     @Bind(R.id.detail_plot) TextView plot;
@@ -68,6 +73,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
     }
 
 
@@ -77,6 +83,21 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         MovieApplication movieApplication = (MovieApplication) getActivity().getApplication();
         ((MovieApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.presentDetails(((ActivityMain)getActivity()).getCurrentResult());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        _subscriptions.unsubscribe();
+    }
+
+
+
 
     @Override
     public DetailsFragPresenter createPresenter() {
