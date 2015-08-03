@@ -18,14 +18,28 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
+    Result result;
+
     public DetailsFragPresenter() {
     }
 
-    public void presentDetails(Result result) {
+    public void onFragStart(){
+        if(isViewAttached()){
+        getView().showLoading();
+            if (result!=null){
+                getView().setData(result);
+                getView().showSearchList();
+            }
+        }
+    }
+
+    public void presentDetails(Result event) {
         //update View
         if (isViewAttached()) {
-            getView().setData(result);
+            this.result = event;
             getView().showSearchList();//If view IS attached then show the searchList
+            getView().setData(this.result);
+
         }
 
     }

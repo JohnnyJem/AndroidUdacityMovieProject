@@ -52,7 +52,11 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Bind(R.id.detail_image) ImageView image;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
 
-    Result result;
+    private static final String VIEWSTATE0 = "0";
+    private static final String VIEWSTATE1 = "1";
+    private static final String VIEWSTATE2 = "2";
+
+    Result retainedResult;
     AppComponent appComponent;
     // using a retained fragment to hold the ViewState
     // and the adapter for the RecyclerView
@@ -62,7 +66,8 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
+
     }
 
     @Override
@@ -80,23 +85,24 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     //Injecting our dagger dependencies
     @Override
     protected void injectDependencies() {
-        MovieApplication movieApplication = (MovieApplication) getActivity().getApplication();
         ((MovieApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        presenter.presentDetails(((ActivityMain)getActivity()).getCurrentResult());
+
+        presenter.onFragStart();
+        if (((ActivityMain) getActivity()).getCurrentResult()!=null) {
+            presenter.presentDetails(((ActivityMain) getActivity()).getCurrentResult());
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        _subscriptions.unsubscribe();
+
     }
-
-
 
 
     @Override
@@ -121,11 +127,11 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public void setData(Result result) {
-
-        title.setText(result.getTitle());
-        plot.setText(result.getOverview());
-        userRating.setText(String.valueOf(result.getVoteAverage()));
-        releaseDate.setText(result.getReleaseDate());
+        ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
+        title.setText("Title: \n" + result.getTitle());
+        plot.setText("Overview: \n \n" + result.getOverview());
+        userRating.setText("User Rating: \n" + String.valueOf(result.getVoteAverage()));
+        releaseDate.setText("Release Date: \n" + result.getReleaseDate());
 
         String imageUrl = "http://image.tmdb.org/t/p/w185/" + result.getPosterPath();
         Glide.with(this)
@@ -146,7 +152,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     public void showSearchList() {
         getViewState().setStateShowSearchList();
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
-        setHasOptionsMenu(true);
+
     }
 
 

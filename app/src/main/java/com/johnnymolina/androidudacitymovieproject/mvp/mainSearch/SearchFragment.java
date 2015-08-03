@@ -3,9 +3,13 @@ package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -65,12 +69,16 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (savedInstanceState!=null) {
+
+        }
            if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
            }
@@ -91,9 +99,9 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                     }else{
                         Log.e("RX","Does not hasObservers");
                     }
-
-
                 }
+
+
 
                 @Override
                 public void onItemLongClick(View view, int position) {
@@ -102,23 +110,21 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             }));
 
 
-        //Set a listener to be called when an action is performed on the text view.
-        //searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            //@Override
-            //public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-               // if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                //    presenter.searchForMovies(v.getText().toString());
-                  //  return true;
-               // }
-               // return false;
-           // }
-       // });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.setMovies();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
     //Injecting our dagger dependencies
     @Override protected void injectDependencies() {
-        MovieApplication movieApplication = (MovieApplication) getActivity().getApplication();
         ((MovieApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
@@ -177,6 +183,32 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
         Toast.makeText(movieApplication, "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_toolbar_search, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String mostPopular = "most_popular";
+        String highestRated = "highest_rated";
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                ((ActivityMain) getActivity()).openDrawr();
+                return true;
+            case R.id.most_popular:
+                this.overflowMenuTasks(mostPopular);
+                return true;
+            case R.id.highest_rated:
+                this.overflowMenuTasks(highestRated);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public void overflowMenuTasks(String itemName){
         switch (itemName) {
             case "most_popular":
@@ -187,5 +219,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                 return;
         }
     }
+
+
 
 }

@@ -18,9 +18,16 @@ import rx.android.schedulers.AndroidSchedulers;
 //TODO: Fix Model and Result Service to attach successfully with the setData() and the searchListAAdapter
 public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
     MovieService movieService;
+    List<Result> list;
 
     public SearchListPresenter(MovieService movieService) {
         this.movieService = movieService;
+    }
+
+    public void setMovies(){
+        if (list!=null) {
+            getView().setData(list);
+        }
     }
 
     public void searchForMovies(String query) {
@@ -49,7 +56,7 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
 
                     @Override
                     public void onNext(MovieSearchResponse movieSearchResponse) {
-                        List<Result> list= movieSearchResponse.getResults();
+                        list= movieSearchResponse.getResults();
                         if (isViewAttached()) {
                             getView().setData(list);
                         }
