@@ -3,6 +3,8 @@ package com.johnnymolina.androidudacitymovieproject;
 import android.app.Application;
 import android.content.Context;
 
+import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -16,6 +18,7 @@ import dagger.Provides;
 @Module
 public class AppModule {
     private MovieApplication movieApplication;
+    private RxBus _rxBus = null;
 
     public AppModule(MovieApplication movieApplication){
         this.movieApplication = movieApplication;
@@ -26,6 +29,14 @@ public class AppModule {
     @Provides @Singleton
     public MovieApplication provideMovieApplication(){
         return this.movieApplication;
+    }
+
+    @Provides @Singleton
+    public RxBus provideRxBus() {
+        if (_rxBus == null) {
+            _rxBus = new RxBus();
+        }
+        return _rxBus;
     }
 
 }

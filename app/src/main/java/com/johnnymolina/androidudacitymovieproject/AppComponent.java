@@ -3,6 +3,7 @@ package com.johnnymolina.androidudacitymovieproject;
 import com.google.gson.Gson;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
+import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.SearchFragment;
@@ -34,7 +35,11 @@ public interface AppComponent {
     void inject(MovieApplication movieApplication);
 
 
+
+
     public MovieApplication movieApplication();
+
+    public RxBus rxBus();
 
     public OkHttpClient okHttpClient();
 

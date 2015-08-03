@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -17,7 +18,9 @@ import com.johnnymolina.androidudacitymovieproject.adapters.SearchListAdapter;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
+import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 
@@ -36,6 +39,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
     @Inject MovieService movieService;
     @Inject MovieApplication movieApplication;
+    @Inject RxBus _rxBus;
 
     @Bind(R.id.search_box) EditText searchBox;
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
@@ -59,6 +63,11 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -76,7 +85,14 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    sendCurrentResult(searchListAdapter.getMovies().get(position));
+                    if (_rxBus.hasObservers()) {
+                        Log.e("RX","hasObservers");
+                                _rxBus.send(searchListAdapter.getMovies().get(position));
+                    }else{
+                        Log.e("RX","Does not hasObservers");
+                    }
+
+
                 }
 
                 @Override
@@ -98,6 +114,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
            // }
        // });
     }
+
 
     //Injecting our dagger dependencies
     @Override protected void injectDependencies() {
@@ -170,9 +187,5 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                 return;
         }
     }
-
-public void sendCurrentResult(Result result){
-    ((ActivityMain)getActivity()).setCurrentResult(result);
-}
 
 }

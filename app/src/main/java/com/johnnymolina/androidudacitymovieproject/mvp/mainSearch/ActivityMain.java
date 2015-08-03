@@ -13,20 +13,29 @@ import android.view.MenuItem;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import javax.inject.Inject;
 
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
+
+import static rx.android.app.AppObservable.bindActivity;
+import static rx.android.app.AppObservable.bindSupportFragment;
 
 
 public class ActivityMain extends AppCompatActivity {
     @Inject MovieApplication movieApplication;
+    @Inject RxBus _rxBus;
+    private CompositeSubscription _subscriptions;
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private SearchFragment retainedFragment;
     private Result result;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +51,6 @@ public class ActivityMain extends AppCompatActivity {
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_launcher);
         ab.setDisplayHomeAsUpEnabled(true);
-
-
             if (savedInstanceState != null) { // saved instance state, fragment may exist
                 // look up the instance that already exists by tag
                 retainedFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
@@ -59,10 +66,39 @@ public class ActivityMain extends AppCompatActivity {
                         .replace(R.id.fragmentContainer, f)
                         .commit();
             }
-
-
-
     }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+       getComponent().inject(this);
+
+        _subscriptions = new CompositeSubscription();
+        _subscriptions//
+                .add(bindActivity(this, _rxBus.toObserverable())//
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object event) {
+
+                                if (event instanceof Result) {
+                                    getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.fragmentContainer, new DetailsFrag())
+                                            .commit();
+                                }
+                            }
+                        }));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        _subscriptions.unsubscribe();
+    }
+
 
     public AppComponent getComponent(){
         MovieApplication movieApplication = (MovieApplication) getApplication();
@@ -101,14 +137,6 @@ public class ActivityMain extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
     }
 
-    public void setCurrentResult(Result result){
-        result = this.result;
-        android.support.v4.app.Fragment f = new DetailsFrag();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, f)
-                .commit();
-    }
 
     public Result getCurrentResult(){
         return result;
