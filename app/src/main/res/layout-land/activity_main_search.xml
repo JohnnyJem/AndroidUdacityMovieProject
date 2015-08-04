@@ -26,14 +26,15 @@
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/fragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="297dp"
+            android:layout_height="match_parent"
+            android:foregroundGravity="left" />
 
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/fragmentContainer1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:foregroundGravity="right" />
         </LinearLayout>
 
     </LinearLayout>

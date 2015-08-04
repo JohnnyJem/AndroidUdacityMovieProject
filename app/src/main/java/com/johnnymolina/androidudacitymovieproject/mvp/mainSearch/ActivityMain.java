@@ -46,7 +46,6 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_search);
-
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -58,17 +57,52 @@ public class ActivityMain extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
             if (savedInstanceState != null) { // saved instance state, fragment may exist
                 // look up the instance that already exists by tag
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
-                        .commit();
+                if(getResources().getBoolean(R.bool.dual_pane)) {
+
+                    if (getSupportFragmentManager().findFragmentByTag(VIEWSTATE2) != null) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                                .replace(R.id.fragmentContainer1, getSupportFragmentManager().findFragmentByTag(VIEWSTATE2))
+                                .commit();
+                    } else {
+                        if (getSupportFragmentManager().findFragmentByTag(VIEWSTATE1) instanceof DetailsFrag){
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                                    .commit();
+                        }else {
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                                    .replace(R.id.fragmentContainer1, new DetailsFrag(), VIEWSTATE2)
+                                    .commit();
+                        }
+                    }
+                }else {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                                .commit();
+
+                }
+
             } else if (savedInstanceState == null) {
                 //If no fragment present then create a new one and place it in our main UI.
-                android.support.v4.app.Fragment f = new SearchFragment();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer, f,VIEWSTATE1)
-                        .commit();
+                //Check if we are in dual pane mode or not.
+                if(getResources().getBoolean(R.bool.dual_pane)){
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragmentContainer, new SearchFragment(), VIEWSTATE1)
+                            .replace(R.id.fragmentContainer1, new DetailsFrag(),VIEWSTATE2)
+                            .commit();
+                }else{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragmentContainer, new SearchFragment(),VIEWSTATE1)
+                            .commit();
+                }
+
             }
     }
 
@@ -97,11 +131,20 @@ public class ActivityMain extends AppCompatActivity {
     private void initDetailFrag(Result result) {
         this.result = result;
         Log.e("RX", result.getTitle().toString());
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, new DetailsFrag(),VIEWSTATE1)
-                .addToBackStack(VIEWSTATE0)
-                .commit();
+
+        if(getResources().getBoolean(R.bool.dual_pane)) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer1, new DetailsFrag(), VIEWSTATE2)
+                    .addToBackStack(VIEWSTATE1)
+                    .commit();
+        }else{
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new DetailsFrag(), VIEWSTATE1)
+                    .addToBackStack(VIEWSTATE1)
+                    .commit();
+        }
     }
 
     @Override

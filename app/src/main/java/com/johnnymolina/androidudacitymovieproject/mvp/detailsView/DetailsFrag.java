@@ -128,10 +128,10 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void setData(Result result) {
         ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
-        title.setText("Title: \n" + result.getTitle());
-        plot.setText("Overview: \n \n" + result.getOverview());
-        userRating.setText("User Rating: \n" + String.valueOf(result.getVoteAverage()));
-        releaseDate.setText("Release Date: \n" + result.getReleaseDate());
+        title.setText(result.getTitle());
+        plot.setText(result.getOverview());
+        userRating.setText(""+String.valueOf(result.getVoteAverage())+"/10");
+        releaseDate.setText(result.getReleaseDate().substring(0,4));
 
         String imageUrl = "http://image.tmdb.org/t/p/w185/" + result.getPosterPath();
         Glide.with(this)

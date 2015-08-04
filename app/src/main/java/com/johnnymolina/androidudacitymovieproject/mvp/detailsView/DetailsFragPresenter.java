@@ -25,8 +25,9 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
     public void onFragStart(){
         if(isViewAttached()){
-        getView().showLoading();
+
             if (result!=null){
+                getView().showLoading();
                 getView().setData(result);
                 getView().showSearchList();
             }
