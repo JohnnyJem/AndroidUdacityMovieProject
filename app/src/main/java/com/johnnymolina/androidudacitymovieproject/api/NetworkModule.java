@@ -31,7 +31,7 @@ import retrofit.converter.GsonConverter;
  */
 @Module
 public class NetworkModule {
-    public static String API_KEY=""; //API KEY LOCATED IN README
+    public static String API_KEY="cc1c2ce2a16823ab8ea4bb70470d6"; //API KEY LOCATED IN README
 
     public static String HTTP_REQUEST_DISCOVER="http://api.themoviedb.org";
     public static final String PRODUCTION_API_URL = "http://image.tmdb.org/t/p/w185//";

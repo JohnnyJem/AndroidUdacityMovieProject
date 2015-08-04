@@ -122,8 +122,8 @@
     <orderEntry type="library" exported="" name="icepick-processor-3.0.2" level="project" />
     <orderEntry type="library" exported="" name="quoin-0.1.2" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
-    <orderEntry type="library" exported="" name="auto-service-1.0-rc2" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-0.25.0" level="project" />
+    <orderEntry type="library" exported="" name="auto-service-1.0-rc2" level="project" />
     <orderEntry type="library" exported="" name="javax.annotation-api-1.2" level="project" />
     <orderEntry type="library" exported="" name="scout-0.1.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-2.0.1" level="project" />
