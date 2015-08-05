@@ -191,6 +191,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     public boolean onOptionsItemSelected(MenuItem item) {
         String mostPopular = "most_popular";
         String highestRated = "highest_rated";
+        String favorites = "favorites";
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -202,6 +203,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             case R.id.highest_rated:
                 this.overflowMenuTasks(highestRated);
                 return true;
+            case R.id.favorites_filter:
+                this.overflowMenuTasks(favorites);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -214,6 +217,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             case "highest_rated":
                 presenter.searchForMovies("vote_count.desc");
                 return;
+            case "favorites":
+                presenter.searchForFavoriteMovies();
         }
     }
 

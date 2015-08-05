@@ -67,4 +67,10 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
                     }
                 });
     }
+
+
+    //Todo: Implement Realm.io here. Return data as an arraylist.
+    public void searchForFavoriteMovies() {
+
+    }
 }

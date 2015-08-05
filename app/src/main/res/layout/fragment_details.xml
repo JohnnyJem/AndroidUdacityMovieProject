@@ -32,7 +32,7 @@
                     android:id="@+id/detail_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Movie Title"
+                    android:text="Select a Movie"
                     android:textSize="26dp"
                     android:textColor="@android:color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -42,9 +42,11 @@
 
             </RelativeLayout>
             <LinearLayout
+                android:id="@+id/detail_linear_layout"
                 android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="invisible">
                 <ImageView
                     android:id="@+id/detail_image"
                     android:layout_width="189dp"
@@ -78,7 +80,8 @@
                 android:textStyle="bold"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -100,6 +103,46 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="Plot Synopsis"/>
+            <View style="@style/Divider"/>
+            <TextView
+                android:id="@+id/detail_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Media"/>
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+                </HorizontalScrollView>
+      ```   <View style="@style/Divider"/>
+            <TextView
+                android:id="@+id/detail_reviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Reviews"/>
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll_reviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+                </HorizontalScrollView>
         </LinearLayout>
 
         <FrameLayout
@@ -115,4 +158,5 @@
         </FrameLayout>
     </ViewFlipper>
     </ScrollView>
+
 </FrameLayout>

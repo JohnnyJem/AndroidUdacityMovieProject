@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -45,6 +46,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Inject RxBus _rxBus;
     private CompositeSubscription _subscriptions;
 
+    @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
     @Bind(R.id.detail_title) TextView title;
     @Bind(R.id.detail_plot) TextView plot;
     @Bind(R.id.detail_user_rating) TextView userRating;
@@ -91,7 +93,6 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onStart() {
         super.onStart();
-
         presenter.onFragStart();
         if (((ActivityMain) getActivity()).getCurrentResult()!=null) {
             presenter.presentDetails(((ActivityMain) getActivity()).getCurrentResult());
@@ -103,7 +104,6 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         super.onStop();
 
     }
-
 
     @Override
     public DetailsFragPresenter createPresenter() {
@@ -127,20 +127,21 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public void setData(Result result) {
-        ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
-        title.setText(result.getTitle());
-        plot.setText(result.getOverview());
-        userRating.setText(""+String.valueOf(result.getVoteAverage())+"/10");
-        releaseDate.setText(result.getReleaseDate().substring(0,4));
+            ((ActivityMain) getActivity()).getSupportActionBar().setTitle("Movie Details");
+            linearLayout.setVisibility(View.VISIBLE);
+            title.setText(result.getTitle());
+            plot.setText(result.getOverview());
+            userRating.setText("" + String.valueOf(result.getVoteAverage()) + "/10");
+            releaseDate.setText(result.getReleaseDate().substring(0, 4));
 
-        String imageUrl = "http://image.tmdb.org/t/p/w185/" + result.getPosterPath();
-        Glide.with(this)
-                .load(imageUrl)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.placeholderdrawable)
-                .fitCenter()
-                .into(image);
+            String imageUrl = "http://image.tmdb.org/t/p/w185/" + result.getPosterPath();
+            Glide.with(this)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.placeholderdrawable)
+                    .fitCenter()
+                    .into(image);
     }
 
     @Override

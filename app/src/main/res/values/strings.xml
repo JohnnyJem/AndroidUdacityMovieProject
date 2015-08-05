@@ -5,6 +5,7 @@
     <string name="action_search">Search</string>
     <string name="most_popular">Sort by Most Popular</string>
     <string name="highest_rated">Sort by Highest Rated</string>
+    <string name="favorites_filter">Sort by Favorites</string>
     <string name="search_hint">Search by Movie Title</string>
     <string name="title_activity_toolbar_search">ToolbarSearchActivity</string>
     <string name="hello_world">Hello world!</string>
