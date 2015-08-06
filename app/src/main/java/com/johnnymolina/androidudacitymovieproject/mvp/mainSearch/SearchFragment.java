@@ -80,7 +80,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
            }
            else{
-               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
            }
 
            recyclerView.setHasFixedSize(true);
