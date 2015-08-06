@@ -97,52 +97,48 @@
 
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                style="@style/TextLinearLayout"
+                android:padding="16dp">
             <TextView
                 android:id="@+id/detail_plot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:paddingTop="10dp"
                 android:text="Plot Synopsis"/>
-            <View style="@style/Divider"/>
-            <TextView
+
+                <TextView
                 android:id="@+id/detail_media"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:paddingTop="16dp"
                 android:text="Media"/>
-            <HorizontalScrollView
-                android:id="@+id/horizontal_scroll_media"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:scrollbars="none">
+                <View style="@style/Divider"/>
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
+                    android:id="@+id/detail_media_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                 </LinearLayout>
-                </HorizontalScrollView>
-      ```   <View style="@style/Divider"/>
-            <TextView
-                android:id="@+id/detail_reviews"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="Reviews"/>
-            <HorizontalScrollView
-                android:id="@+id/horizontal_scroll_reviews"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:scrollbars="none">
+                <TextView
+                    android:id="@+id/detail_reviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp"
+                    android:text="Reviews"/>
+
+                <View style="@style/Divider"/>
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
+                    android:id="@+id/detail_review_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                 </LinearLayout>
-                </HorizontalScrollView>
+            </LinearLayout>
         </LinearLayout>
 
         <FrameLayout

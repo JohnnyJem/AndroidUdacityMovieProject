@@ -1,10 +1,12 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,20 +21,18 @@ import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import rx.functions.Action1;
-import rx.observables.ConnectableObservable;
 import rx.subscriptions.CompositeSubscription;
-
-import static rx.android.app.AppObservable.bindActivity;
-import static rx.android.app.AppObservable.bindFragment;
-import static rx.android.app.AppObservable.bindSupportFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,8 +45,11 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Inject MovieApplication movieApplication;
     @Inject RxBus _rxBus;
     private CompositeSubscription _subscriptions;
+    AppComponent appComponent;
 
     @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
+    @Bind(R.id.detail_media_linear_layout) LinearLayout detailMediaLinearLayout;
+    @Bind(R.id.detail_review_linear_layout) LinearLayout detailReviewLinearLayout;
     @Bind(R.id.detail_title) TextView title;
     @Bind(R.id.detail_plot) TextView plot;
     @Bind(R.id.detail_user_rating) TextView userRating;
@@ -59,7 +62,9 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     private static final String VIEWSTATE2 = "2";
 
     Result retainedResult;
-    AppComponent appComponent;
+
+
+
     // using a retained fragment to hold the ViewState
     // and the adapter for the RecyclerView
 
@@ -93,10 +98,14 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onStart() {
         super.onStart();
-        presenter.onFragStart();
+        presenter.initalize();
         if (((ActivityMain) getActivity()).getCurrentResult()!=null) {
             presenter.presentDetails(((ActivityMain) getActivity()).getCurrentResult());
+            presenter.requestMovieMedia();
         }
+
+
+
     }
 
     @Override
@@ -107,7 +116,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public DetailsFragPresenter createPresenter() {
-        return new DetailsFragPresenter();
+        return new DetailsFragPresenter(movieService);
     }
 
     @Override
@@ -143,6 +152,28 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
                     .fitCenter()
                     .into(image);
     }
+
+    @Override
+    public void setDataMedia(List<ResultMedia> resultMedia) {
+        for (ResultMedia resultMediaTemp : resultMedia){
+            String linkText = resultMediaTemp.getName();
+            String key = resultMediaTemp.getKey();
+
+            TextView linkTextView = new TextView(movieApplication);
+            linkTextView.setText(linkText);
+            Log.e("setMedia", linkText);
+            linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            detailMediaLinearLayout.addView(linkTextView);
+            linkTextView.setTextColor(Color.blue());
+            //(getResources().getColor(R.color.abc_primary_text_material_light));
+        }
+    }
+
+    @Override
+    public void setDataReview(List<ResultReview> resultsReview) {
+
+    }
+
 
     @Override
     public DetailsFragViewState getViewState() {

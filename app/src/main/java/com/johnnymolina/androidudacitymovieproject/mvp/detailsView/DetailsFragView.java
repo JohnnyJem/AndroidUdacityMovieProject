@@ -2,6 +2,8 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
 
 import java.util.List;
 
@@ -11,6 +13,10 @@ import java.util.List;
 public interface DetailsFragView extends MvpView {
 
     public void setData(Result result);
+
+    public void setDataMedia(List<ResultMedia> resultsMedia);
+
+    public void setDataReview(List<ResultReview> resultsReview);
 
     public void showLoading();
 
