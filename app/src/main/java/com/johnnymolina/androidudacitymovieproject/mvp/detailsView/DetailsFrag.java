@@ -164,7 +164,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
             Log.e("setMedia", linkText);
             linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             detailMediaLinearLayout.addView(linkTextView);
-            linkTextView.setTextColor(Color.blue());
+            linkTextView.setTextColor(Color.BLUE);
             //(getResources().getColor(R.color.abc_primary_text_material_light));
         }
     }
