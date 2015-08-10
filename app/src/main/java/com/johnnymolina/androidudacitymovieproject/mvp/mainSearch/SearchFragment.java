@@ -3,7 +3,6 @@ package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,7 +23,6 @@ import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
-import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 
@@ -46,7 +44,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Inject RxBus _rxBus;
 
     @Bind(R.id.search_box) EditText searchBox;
-    @Bind(R.id.recycler_view) RecyclerView recyclerView;
+    @Bind(R.id.rv_movie_search_images) RecyclerView recyclerView;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
 
     AppComponent appComponent;
@@ -83,9 +81,9 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
            }
 
-           recyclerView.setHasFixedSize(true);
-           searchListAdapter = searchListAdapter == null ? new SearchListAdapter() : searchListAdapter;
-        recyclerView.setAdapter(searchListAdapter);
+            recyclerView.setHasFixedSize(true);
+            searchListAdapter = searchListAdapter == null ? new SearchListAdapter() : searchListAdapter;
+            recyclerView.setAdapter(searchListAdapter);
 
             recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
@@ -97,8 +95,6 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                         Log.e("RX","Does not hasObservers");
                     }
                 }
-
-
 
                 @Override
                 public void onItemLongClick(View view, int position) {

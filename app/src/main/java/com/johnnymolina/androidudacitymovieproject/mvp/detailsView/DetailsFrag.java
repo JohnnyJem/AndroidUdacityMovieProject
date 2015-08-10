@@ -4,6 +4,8 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,14 @@ import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
+import com.johnnymolina.androidudacitymovieproject.adapters.ReviewsAdapter;
+import com.johnnymolina.androidudacitymovieproject.adapters.SearchListAdapter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
+import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
@@ -49,13 +54,16 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
     @Bind(R.id.detail_media_linear_layout) LinearLayout detailMediaLinearLayout;
-    @Bind(R.id.detail_review_linear_layout) LinearLayout detailReviewLinearLayout;
     @Bind(R.id.detail_title) TextView title;
     @Bind(R.id.detail_plot) TextView plot;
     @Bind(R.id.detail_user_rating) TextView userRating;
     @Bind(R.id.detail_release_date) TextView releaseDate;
     @Bind(R.id.detail_image) ImageView image;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
+
+
+    @Bind(R.id.rv_movie_reviews) RecyclerView recyclerView;
+    ReviewsAdapter reviewsAdapter;
 
     private static final String VIEWSTATE0 = "0";
     private static final String VIEWSTATE1 = "1";
@@ -85,7 +93,21 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //setup our reviewsRecyclerView and reviewsAdapter
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        reviewsAdapter = reviewsAdapter == null ? new ReviewsAdapter() : reviewsAdapter;
+        recyclerView.setAdapter(reviewsAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //ResultReview review = reviewsAdapter.getReviews().get(position);
+            }
 
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        }));
     }
 
 
@@ -102,9 +124,8 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         if (((ActivityMain) getActivity()).getCurrentResult()!=null) {
             presenter.presentDetails(((ActivityMain) getActivity()).getCurrentResult());
             presenter.requestMovieMedia();
+            presenter.requestMovieReviews();
         }
-
-
 
     }
 
@@ -159,19 +180,19 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
             String linkText = resultMediaTemp.getName();
             String key = resultMediaTemp.getKey();
 
-            TextView linkTextView = new TextView(movieApplication);
+            TextView linkTextView = new TextView(getActivity());
             linkTextView.setText(linkText);
             Log.e("setMedia", linkText);
             linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             detailMediaLinearLayout.addView(linkTextView);
-            linkTextView.setTextColor(Color.BLUE);
-            //(getResources().getColor(R.color.abc_primary_text_material_light));
+            linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
         }
     }
 
     @Override
     public void setDataReview(List<ResultReview> resultsReview) {
-
+        reviewsAdapter.setReviews(resultsReview);
+        reviewsAdapter.notifyDataSetChanged();
     }
 
 
@@ -197,7 +218,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void showError(Throwable e) {
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
-        Toast.makeText(movieApplication, "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
     }
 
 

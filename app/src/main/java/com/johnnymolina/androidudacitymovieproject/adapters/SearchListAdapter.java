@@ -31,6 +31,13 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
     public SearchListAdapter( ) {
 
     }
+    public List<Result> getMovies() {
+        return movies ;
+    }
+
+    public void setMovies(List<Result> movies) {
+        this.movies = movies;
+    }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -46,7 +53,7 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rowView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_view, parent, false);
+                .inflate(R.layout.row_view_images, parent, false);
         context= rowView.getContext();
         return new ViewHolder(rowView);
     }
@@ -71,13 +78,6 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
         return movies == null ? 0 : movies.size();
     }
 
-    public List<Result> getMovies() {
-        return movies ;
-    }
-
-    public void setMovies(List<Result> movies) {
-        this.movies = movies;
-    }
 
 
 }

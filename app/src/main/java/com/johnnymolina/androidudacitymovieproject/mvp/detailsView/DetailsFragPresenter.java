@@ -4,6 +4,7 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
 import com.johnnymolina.androidudacitymovieproject.api.model.MovieMediaRequestResponse;
+import com.johnnymolina.androidudacitymovieproject.api.model.MovieReviewRequestResponse;
 import com.johnnymolina.androidudacitymovieproject.api.model.MovieSearchResponse;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
@@ -87,6 +88,41 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                     });
         }
 
+    public void requestMovieReviews() {
+        String query =Integer.toString(result.getId());
+        previousMediaRequestQuery = query;
+        //update View
+        if (isViewAttached()) {
+            getView().showLoading();//grabbing the view reference
+        }
+        //we ask the presenter to perform a search with a query
+        movieService.movieReviewRequest(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
+                .delay(5, TimeUnit.SECONDS) //wait 5 seconds
+                .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
+                .subscribe(new Subscriber<MovieReviewRequestResponse>() {//Attaching subscriber of type ____SearchResponse to the Observable
+                    @Override
+                    public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
+                        if (isViewAttached()) {
+                            getView().showSearchList();//If view IS attached then show the searchList
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().showError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(MovieReviewRequestResponse movieReviewRequestResponse) {
+                        resultsReviewList = movieReviewRequestResponse.getResultsReview();
+                        if (isViewAttached()) {
+                            getView().setDataReview(resultsReviewList);
+                        }
+                    }
+                });
+    }
 
 
 }
