@@ -1,6 +1,7 @@
 package com.johnnymolina.androidudacitymovieproject.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Johnny on 8/9/2015.
  */
-public class ReviewsAdapter extends AutofitRecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
+public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
 
     List<ResultReview> reviews;
     Context context;
@@ -60,15 +61,10 @@ public class ReviewsAdapter extends AutofitRecyclerView.Adapter<ReviewsAdapter.V
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ResultReview review = reviews.get(position);
-        Log.e("ResultReview", reviews.get(position).getAuthor().toString());
-        Log.e("ResultReview", reviews.get(position).getContent().toString());
         holder.authorTextView.setText(review.getAuthor());
         holder.contentTextView.setText(review.getContent());
         holder.authorTextView.setTextColor(context.getResources().getColor(R.color.primary_dark_material_light));
         holder.contentTextView.setTextColor(context.getResources().getColor(R.color.primary_dark_material_light));
-
-        Log.e("ResultReview", holder.authorTextView.getText().toString());
-        Log.e("ResultReview", holder.contentTextView.getText().toString());
     }
 
     @Override

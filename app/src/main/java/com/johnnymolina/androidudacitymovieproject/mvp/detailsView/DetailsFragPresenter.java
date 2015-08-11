@@ -10,6 +10,7 @@ import com.johnnymolina.androidudacitymovieproject.api.model.MovieReviewRequestR
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
+import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -33,20 +34,22 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         this.movieService = movieService;
     }
 
-    public void presentDetails(Result event) {
-        //update View
+    public void setDetails(Result currentResult) {
         if (isViewAttached()) {
-            this.result = event;
-            getView().showSearchList();//If view IS attached then show the searchList
-            getView().setData(this.result);
-        }
-    }
+            if (this.result==null) {
+                this.result = currentResult;
+                }
 
-    public void initalize(){
-        if(isViewAttached()){
-            if (result!=null){
-                getView().setData(result);
+            getView().showSearchList();//If view IS attached then show the searchList
+            getView().setData(result);
+            if (resultsMediaList!=null) {
+                getView().setDataMedia(resultsMediaList);
+            }else{
                 requestMovieMedia();
+            }
+            if (resultsReviewList!=null) {
+                getView().setDataReview(resultsReviewList);
+            }else{
                 requestMovieReviews();
             }
         }

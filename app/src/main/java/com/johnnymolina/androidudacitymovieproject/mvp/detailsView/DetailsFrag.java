@@ -1,12 +1,13 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 
-import android.graphics.Color;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,13 +23,11 @@ import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.adapters.ReviewsAdapter;
-import com.johnnymolina.androidudacitymovieproject.adapters.SearchListAdapter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
-import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
@@ -94,17 +93,27 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         reviewsAdapter = reviewsAdapter == null ? new ReviewsAdapter() : reviewsAdapter;
         recyclerView.setAdapter(reviewsAdapter);
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+        //workaround to get recyclerview working while nested inside a scrollview.
+        //An alternative option would be to make a RecyclerView.Adapter that takes a header as well as different rows.
+        //The header would expand the first part of the screens layout.
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                //ResultReview review = reviewsAdapter.getReviews().get(position);
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                int action = e.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        rv.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                }
+                return false;
             }
 
             @Override
-            public void onItemLongClick(View view, int position) {
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 
             }
-        }));
+
+        });
     }
 
 
@@ -117,11 +126,11 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onStart() {
         super.onStart();
-
-        if (((ActivityMain) getActivity()).getCurrentResult()!=null) {
-            presenter.presentDetails(((ActivityMain) getActivity()).getCurrentResult());
+        if (retainedResult!=null) {
+            presenter.setDetails(retainedResult);
+        }else {
+            presenter.setDetails(((ActivityMain) getActivity()).getCurrentResult());
         }
-        presenter.initalize();
     }
 
     @Override
@@ -152,6 +161,8 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public void setData(Result result) {
+            retainedResult = result;
+
             ((ActivityMain) getActivity()).getSupportActionBar().setTitle("Movie Details");
             linearLayout.setVisibility(View.VISIBLE);
             title.setText(result.getTitle());
@@ -170,14 +181,24 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setDataMedia(List<ResultMedia> resultMedia) {
-
-        for (ResultMedia resultMediaTemp : resultMedia){
-            String linkText = resultMediaTemp.getName();
-            String key = resultMediaTemp.getKey();
-
+    public void setDataMedia(final List<ResultMedia> resultMedia) {
+        if (detailMediaLinearLayout.getChildCount()==0) {
+            for (final ResultMedia resultMediaTemp : resultMedia) {
+                TextView linkTextView = new TextView(getActivity());
+                linkTextView.setText(resultMediaTemp.getName());
+                linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                detailMediaLinearLayout.addView(linkTextView);
+                linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
+                linkTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + resultMediaTemp.getKey())));
+                    }
+                });
+            }
+        }else{
             TextView linkTextView = new TextView(getActivity());
-            linkTextView.setText(linkText);
+            linkTextView.setText("No media links available");
             linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             detailMediaLinearLayout.addView(linkTextView);
             linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
