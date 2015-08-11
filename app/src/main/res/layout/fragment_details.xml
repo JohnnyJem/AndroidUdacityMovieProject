@@ -135,6 +135,11 @@
                     android:text="Reviews"/>
 
                 <View style="@style/Divider"/>
+                <LinearLayout
+                    android:id="@+id/rv_reviews_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_movie_reviews"
@@ -142,6 +147,7 @@
                     android:layout_height="wrap_content"
                     android:minHeight="100dp" />
 
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

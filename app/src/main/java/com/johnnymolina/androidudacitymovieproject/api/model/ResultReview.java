@@ -7,14 +7,10 @@ import com.google.gson.annotations.Expose;
  */
 public class ResultReview {
 
-    @Expose
-    private String id;
-    @Expose
-    private String author;
-    @Expose
-    private String content;
-    @Expose
-    private String url;
+    @Expose private String id;
+    @Expose private String author;
+    @Expose private String content;
+    @Expose private String url;
 
     /**
      *

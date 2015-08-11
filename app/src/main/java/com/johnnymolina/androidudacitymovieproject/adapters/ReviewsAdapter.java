@@ -2,6 +2,7 @@ package com.johnnymolina.androidudacitymovieproject.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +30,13 @@ public class ReviewsAdapter extends AutofitRecyclerView.Adapter<ReviewsAdapter.V
     public ReviewsAdapter() {
     }
 
-    public List<ResultReview> getReviews() {
-        return reviews ;
-    }
-
     public void setReviews(List<ResultReview> reviews) {
         this.reviews = reviews;
     }
 
+    public List<ResultReview> getReviews() {
+        return reviews ;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.card_view_reviews_text_author) TextView authorTextView;
@@ -60,9 +60,15 @@ public class ReviewsAdapter extends AutofitRecyclerView.Adapter<ReviewsAdapter.V
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ResultReview review = reviews.get(position);
-
+        Log.e("ResultReview", reviews.get(position).getAuthor().toString());
+        Log.e("ResultReview", reviews.get(position).getContent().toString());
         holder.authorTextView.setText(review.getAuthor());
         holder.contentTextView.setText(review.getContent());
+        holder.authorTextView.setTextColor(context.getResources().getColor(R.color.primary_dark_material_light));
+        holder.contentTextView.setTextColor(context.getResources().getColor(R.color.primary_dark_material_light));
+
+        Log.e("ResultReview", holder.authorTextView.getText().toString());
+        Log.e("ResultReview", holder.contentTextView.getText().toString());
     }
 
     @Override

@@ -11,23 +11,14 @@ import java.util.List;
  */
 public class MovieReviewRequestResponse {
 
-    @Expose
-    private int id;
-
-    @Expose
-    private int page;
-
+    @Expose private int id;
+    @Expose private int page;
     @SerializedName("results")
-    @Expose
-    private List<ResultReview> resultsReview = new ArrayList<>();
-
+    @Expose private List<ResultReview> resultsReview = new ArrayList<>();
     @SerializedName("total_pages")
-    @Expose
-    private int totalPages;
-
+    @Expose private int totalPages;
     @SerializedName("total_results")
-    @Expose
-    private int totalResults;
+    @Expose private int totalResults;
 
     /**
      *

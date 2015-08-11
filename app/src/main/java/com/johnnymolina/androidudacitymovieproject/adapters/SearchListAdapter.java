@@ -31,6 +31,7 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
     public SearchListAdapter( ) {
 
     }
+
     public List<Result> getMovies() {
         return movies ;
     }

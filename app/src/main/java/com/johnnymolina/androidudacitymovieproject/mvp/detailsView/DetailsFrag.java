@@ -59,11 +59,10 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Bind(R.id.detail_user_rating) TextView userRating;
     @Bind(R.id.detail_release_date) TextView releaseDate;
     @Bind(R.id.detail_image) ImageView image;
+    @Bind(R.id.rv_movie_reviews) RecyclerView recyclerView;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
 
 
-    @Bind(R.id.rv_movie_reviews) RecyclerView recyclerView;
-    ReviewsAdapter reviewsAdapter;
 
     private static final String VIEWSTATE0 = "0";
     private static final String VIEWSTATE1 = "1";
@@ -71,11 +70,9 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     Result retainedResult;
 
-
-
     // using a retained fragment to hold the ViewState
     // and the adapter for the RecyclerView
-
+    ReviewsAdapter reviewsAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,13 +117,11 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onStart() {
         super.onStart();
-        presenter.initalize();
+
         if (((ActivityMain) getActivity()).getCurrentResult()!=null) {
             presenter.presentDetails(((ActivityMain) getActivity()).getCurrentResult());
-            presenter.requestMovieMedia();
-            presenter.requestMovieReviews();
         }
-
+        presenter.initalize();
     }
 
     @Override
@@ -176,13 +171,13 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public void setDataMedia(List<ResultMedia> resultMedia) {
+
         for (ResultMedia resultMediaTemp : resultMedia){
             String linkText = resultMediaTemp.getName();
             String key = resultMediaTemp.getKey();
 
             TextView linkTextView = new TextView(getActivity());
             linkTextView.setText(linkText);
-            Log.e("setMedia", linkText);
             linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             detailMediaLinearLayout.addView(linkTextView);
             linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));

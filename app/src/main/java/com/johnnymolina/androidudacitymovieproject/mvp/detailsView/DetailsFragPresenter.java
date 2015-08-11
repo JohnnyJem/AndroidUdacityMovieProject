@@ -1,15 +1,15 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
+import android.util.Log;
+
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
 import com.johnnymolina.androidudacitymovieproject.api.model.MovieMediaRequestResponse;
 import com.johnnymolina.androidudacitymovieproject.api.model.MovieReviewRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieSearchResponse;
 import com.johnnymolina.androidudacitymovieproject.api.model.Result;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
-import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.SearchListView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -24,22 +24,13 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
     MovieService movieService;
     List<ResultMedia> resultsMediaList;
     List<ResultReview> resultsReviewList;
-    String previousMediaRequestQuery;
     Result result;
+    String previousMediaQuery;
+    String previousReviewQuery;
+
 
     public DetailsFragPresenter(MovieService movieService) {
         this.movieService = movieService;
-    }
-
-    public void initalize(){
-        if(isViewAttached()){
-
-            if (result!=null){
-                getView().showLoading();
-                getView().setData(result);
-                getView().showSearchList();
-            }
-        }
     }
 
     public void presentDetails(Result event) {
@@ -51,10 +42,21 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         }
     }
 
+    public void initalize(){
+        if(isViewAttached()){
+            if (result!=null){
+                getView().setData(result);
+                requestMovieMedia();
+                requestMovieReviews();
+            }
+        }
+    }
+
 
         public void requestMovieMedia() {
             String query =Integer.toString(result.getId());
-            previousMediaRequestQuery = query;
+            previousMediaQuery = query;
+
             //update View
             if (isViewAttached()) {
                 getView().showLoading();//grabbing the view reference
@@ -63,7 +65,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             movieService.movieMediaRequest(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                     .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                     .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
-                    .subscribe(new Subscriber<MovieMediaRequestResponse>() {//Attaching subscriber of type ____SearchResponse to the Observable
+                    .subscribe(new Subscriber<MovieMediaRequestResponse>() {//Attaching subscriber of type _________Response to the Observable
                         @Override
                         public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                             if (isViewAttached()) {
@@ -89,17 +91,17 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         }
 
     public void requestMovieReviews() {
-        String query =Integer.toString(result.getId());
-        previousMediaRequestQuery = query;
+        String queryReview =Integer.toString(result.getId());
+        previousReviewQuery = queryReview;
         //update View
         if (isViewAttached()) {
             getView().showLoading();//grabbing the view reference
         }
         //we ask the presenter to perform a search with a query
-        movieService.movieReviewRequest(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
+        movieService.movieReviewRequest(queryReview, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                 .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                 .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
-                .subscribe(new Subscriber<MovieReviewRequestResponse>() {//Attaching subscriber of type ____SearchResponse to the Observable
+                .subscribe(new Subscriber<MovieReviewRequestResponse>() {//Attaching subscriber of type _________Response to the Observable
                     @Override
                     public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                         if (isViewAttached()) {
