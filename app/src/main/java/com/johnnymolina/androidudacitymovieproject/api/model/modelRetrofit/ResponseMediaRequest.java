@@ -1,4 +1,4 @@
-package com.johnnymolina.androidudacitymovieproject.api.modelUI;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Johnny on 8/5/2015.
  */
-public class MovieMediaRequestResponse {
+public class ResponseMediaRequest {
 
         @Expose
         private int id;

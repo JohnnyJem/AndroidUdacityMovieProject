@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultReview;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import java.util.List;

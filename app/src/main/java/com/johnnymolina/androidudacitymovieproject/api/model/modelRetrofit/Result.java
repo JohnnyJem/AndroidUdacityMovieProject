@@ -1,4 +1,4 @@
-package com.johnnymolina.androidudacitymovieproject.api.modelUI;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit;
 
 /**
  * Created by Johnny Molina on 7/19/2015.

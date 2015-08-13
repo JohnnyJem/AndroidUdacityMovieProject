@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;

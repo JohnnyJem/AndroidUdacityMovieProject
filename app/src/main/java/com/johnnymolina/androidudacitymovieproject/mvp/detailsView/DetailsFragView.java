@@ -1,9 +1,9 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultMedia;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultReview;
 
 import java.util.List;
 

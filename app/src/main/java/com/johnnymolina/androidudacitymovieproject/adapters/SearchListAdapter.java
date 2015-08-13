@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.johnnymolina.androidudacitymovieproject.extended.AutofitRecyclerView;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import java.util.List;

@@ -3,8 +3,9 @@ package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieSearchResponse;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelPogo.Result1;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseSearchMovies;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +44,7 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
         movieService.movieSearch(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                 .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                 .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
-                .subscribe(new Subscriber<MovieSearchResponse>() {//Attaching subscriber of type ____SearchResponse to the Observable
+                .subscribe(new Subscriber<ResponseSearchMovies>() {//Attaching subscriber of type ____SearchResponse to the Observable
                     @Override
                     public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                         if (isViewAttached()) {
@@ -59,8 +60,14 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
                     }
 
                     @Override
-                    public void onNext(MovieSearchResponse movieSearchResponse) {
+                    public void onNext(ResponseSearchMovies movieSearchResponse) {
                         list= movieSearchResponse.getResults();
+                        Result1.
+                        //map list into simple object
+
+
+
+
                         if (isViewAttached()) {
                             getView().setData(list);
                         }

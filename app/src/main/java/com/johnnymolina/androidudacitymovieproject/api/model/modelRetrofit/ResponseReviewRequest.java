@@ -1,24 +1,42 @@
-package com.johnnymolina.androidudacitymovieproject.api.modelUI;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
+/**
+ * Created by Johnny on 8/5/2015.
+ */
+public class ResponseReviewRequest {
 
-public class MovieSearchResponse {
-
-    @Expose
-    private int page;
-    @Expose
-    private List<Result> results = new ArrayList<Result>();
+    @Expose private int id;
+    @Expose private int page;
+    @SerializedName("results")
+    @Expose private List<ResultReview> resultsReview = new ArrayList<>();
     @SerializedName("total_pages")
-    @Expose
-    private int totalPages;
+    @Expose private int totalPages;
     @SerializedName("total_results")
-    @Expose
-    private int totalResults;
+    @Expose private int totalResults;
+
+    /**
+     *
+     * @return
+     * The id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     *
+     * @param id
+     * The id
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      *
@@ -43,8 +61,8 @@ public class MovieSearchResponse {
      * @return
      * The results
      */
-    public List<Result> getResults() {
-        return results;
+    public List<ResultReview> getResultsReview() {
+        return resultsReview;
     }
 
     /**
@@ -52,8 +70,8 @@ public class MovieSearchResponse {
      * @param results
      * The results
      */
-    public void setResults(List<Result> results) {
-        this.results = results;
+    public void setResultsReview(List<ResultReview> results) {
+        this.resultsReview = results;
     }
 
     /**
@@ -91,5 +109,4 @@ public class MovieSearchResponse {
     public void setTotalResults(int totalResults) {
         this.totalResults = totalResults;
     }
-
 }

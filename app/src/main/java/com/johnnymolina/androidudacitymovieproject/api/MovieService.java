@@ -1,8 +1,8 @@
 package com.johnnymolina.androidudacitymovieproject.api;
 
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieMediaRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieReviewRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieSearchResponse;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseMediaRequest;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseReviewRequest;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseSearchMovies;
 
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -15,15 +15,15 @@ import rx.Observable;
  */
 public interface MovieService {
 
-        @GET("/3/discover/movie") Observable<MovieSearchResponse> movieSearch(
+        @GET("/3/discover/movie") Observable<ResponseSearchMovies> movieSearch(
             @Query("sort_by") String query,
             @Query("api_key") String apiKey);
 
-        @GET("/3/movie/{id}/videos") Observable<MovieMediaRequestResponse> movieMediaRequest(
+        @GET("/3/movie/{id}/videos") Observable<ResponseMediaRequest> movieMediaRequest(
             @Path("id") String query,
             @Query("api_key") String apiKey);
 
-        @GET("/3/movie/{id}/reviews") Observable<MovieReviewRequestResponse> movieReviewRequest(
+        @GET("/3/movie/{id}/reviews") Observable<ResponseReviewRequest> movieReviewRequest(
                 @Path("id") String query,
                 @Query("api_key") String apiKey);
 

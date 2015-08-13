@@ -3,11 +3,11 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieMediaRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieReviewRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultMedia;
-import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseMediaRequest;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseReviewRequest;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultReview;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +65,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             movieService.movieMediaRequest(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                     .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                     .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
-                    .subscribe(new Subscriber<MovieMediaRequestResponse>() {//Attaching subscriber of type _________Response to the Observable
+                    .subscribe(new Subscriber<ResponseMediaRequest>() {//Attaching subscriber of type _________Response to the Observable
                         @Override
                         public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                             if (isViewAttached()) {
@@ -81,7 +81,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                         }
 
                         @Override
-                        public void onNext(MovieMediaRequestResponse movieMediaRequestResponse) {
+                        public void onNext(ResponseMediaRequest movieMediaRequestResponse) {
                             resultsMediaList = movieMediaRequestResponse.getResultsMedia();
                             if (isViewAttached()) {
                                 getView().setDataMedia(resultsMediaList);
@@ -101,7 +101,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         movieService.movieReviewRequest(queryReview, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                 .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                 .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
-                .subscribe(new Subscriber<MovieReviewRequestResponse>() {//Attaching subscriber of type _________Response to the Observable
+                .subscribe(new Subscriber<ResponseReviewRequest>() {//Attaching subscriber of type _________Response to the Observable
                     @Override
                     public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                         if (isViewAttached()) {
@@ -117,7 +117,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                     }
 
                     @Override
-                    public void onNext(MovieReviewRequestResponse movieReviewRequestResponse) {
+                    public void onNext(ResponseReviewRequest movieReviewRequestResponse) {
                         resultsReviewList = movieReviewRequestResponse.getResultsReview();
                         if (isViewAttached()) {
                             getView().setDataReview(resultsReviewList);
