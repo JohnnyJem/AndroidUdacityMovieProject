@@ -1,8 +1,8 @@
 package com.johnnymolina.androidudacitymovieproject.api;
 
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieMediaRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieReviewRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieSearchResponse;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieMediaRequestResponse;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieReviewRequestResponse;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieSearchResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Path;

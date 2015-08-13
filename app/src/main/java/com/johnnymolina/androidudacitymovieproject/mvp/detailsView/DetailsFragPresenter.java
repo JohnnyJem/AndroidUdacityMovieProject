@@ -1,16 +1,13 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
-import android.util.Log;
-
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieMediaRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieReviewRequestResponse;
-import com.johnnymolina.androidudacitymovieproject.api.model.Result;
-import com.johnnymolina.androidudacitymovieproject.api.model.ResultMedia;
-import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
-import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieMediaRequestResponse;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieReviewRequestResponse;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultMedia;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultReview;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

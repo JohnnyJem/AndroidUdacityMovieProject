@@ -3,8 +3,8 @@ package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.model.Result;
-import com.johnnymolina.androidudacitymovieproject.api.model.MovieSearchResponse;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.MovieSearchResponse;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

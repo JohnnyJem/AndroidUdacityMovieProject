@@ -1,18 +1,13 @@
 package com.johnnymolina.androidudacitymovieproject.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.johnnymolina.androidudacitymovieproject.api.model.Result;
-import com.johnnymolina.androidudacitymovieproject.api.model.ResultReview;
-import com.johnnymolina.androidudacitymovieproject.extended.AutofitRecyclerView;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.ResultReview;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import java.util.List;

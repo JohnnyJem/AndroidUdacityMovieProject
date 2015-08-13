@@ -1,4 +1,4 @@
-package com.johnnymolina.androidudacitymovieproject.api.model;
+package com.johnnymolina.androidudacitymovieproject.api.modelUI;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

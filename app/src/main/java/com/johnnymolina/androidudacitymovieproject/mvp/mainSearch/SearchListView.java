@@ -1,7 +1,7 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
 
 import java.util.List;
 

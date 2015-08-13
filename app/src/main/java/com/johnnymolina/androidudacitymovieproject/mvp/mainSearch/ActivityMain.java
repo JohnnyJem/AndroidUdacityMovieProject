@@ -1,35 +1,27 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 
-import android.app.FragmentManager;
-import android.os.PersistableBundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
-import com.johnnymolina.androidudacitymovieproject.api.model.Result;
+import com.johnnymolina.androidudacitymovieproject.api.modelUI.Result;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 import static rx.android.app.AppObservable.bindActivity;
-import static rx.android.app.AppObservable.bindSupportFragment;
 
 
 public class ActivityMain extends AppCompatActivity {

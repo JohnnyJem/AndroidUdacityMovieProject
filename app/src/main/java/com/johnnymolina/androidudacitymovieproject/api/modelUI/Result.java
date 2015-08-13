@@ -1,4 +1,4 @@
-package com.johnnymolina.androidudacitymovieproject.api.model;
+package com.johnnymolina.androidudacitymovieproject.api.modelUI;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
@@ -7,10 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.annotation.Generated;
 
 public class Result {
 
