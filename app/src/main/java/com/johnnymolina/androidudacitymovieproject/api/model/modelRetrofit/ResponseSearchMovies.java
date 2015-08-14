@@ -9,16 +9,15 @@ import java.util.ArrayList;
 
 public class ResponseSearchMovies {
 
-    @Expose
-    private int page;
-    @Expose
-    private List<Result> results = new ArrayList<Result>();
+    @Expose private int page;
+
+    @Expose private List<Result> results = new ArrayList<Result>();
+
     @SerializedName("total_pages")
-    @Expose
-    private int totalPages;
+    @Expose private int totalPages;
+
     @SerializedName("total_results")
-    @Expose
-    private int totalResults;
+    @Expose private int totalResults;
 
     /**
      *

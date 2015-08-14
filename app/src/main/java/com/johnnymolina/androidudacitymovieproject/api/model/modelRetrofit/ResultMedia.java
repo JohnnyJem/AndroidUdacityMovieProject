@@ -7,14 +7,20 @@ import com.google.gson.annotations.SerializedName;
  * Created by Johnny on 8/5/2015.
  */
 public class ResultMedia {
-    @Expose
-    private String id;
+
+    @Expose private String id;
+
     @SerializedName("iso_639_1")
     @Expose private String iso6391;
+
     @Expose private String key;
+
     @Expose private String name;
+
     @Expose private String site;
+
     @Expose private int size;
+
     @Expose private String type;
 
     /**

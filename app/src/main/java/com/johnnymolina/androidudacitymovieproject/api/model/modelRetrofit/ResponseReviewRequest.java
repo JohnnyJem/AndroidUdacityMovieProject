@@ -12,11 +12,15 @@ import java.util.List;
 public class ResponseReviewRequest {
 
     @Expose private int id;
+
     @Expose private int page;
+
     @SerializedName("results")
     @Expose private List<ResultReview> resultsReview = new ArrayList<>();
+
     @SerializedName("total_pages")
     @Expose private int totalPages;
+
     @SerializedName("total_results")
     @Expose private int totalResults;
 
@@ -51,7 +55,7 @@ public class ResponseReviewRequest {
      *
      * @param page
      * The page
-     */
+     */   
     public void setPage(int page) {
         this.page = page;
     }
