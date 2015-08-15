@@ -7,11 +7,11 @@ import java.util.List;
 
 import java.util.ArrayList;
 
-public class ResponseSearchMovies {
+public class ReturnedMovies {
 
     @Expose private int page;
 
-    @Expose private List<Result> results = new ArrayList<Result>();
+    @Expose private List<MovieInfo> movieInfos = new ArrayList<MovieInfo>();
 
     @SerializedName("total_pages")
     @Expose private int totalPages;
@@ -40,19 +40,19 @@ public class ResponseSearchMovies {
     /**
      *
      * @return
-     * The results
+     * The movieInfos
      */
-    public List<Result> getResults() {
-        return results;
+    public List<MovieInfo> getMovieInfos() {
+        return movieInfos;
     }
 
     /**
      *
-     * @param results
-     * The results
+     * @param movieInfos
+     * The movieInfos
      */
-    public void setResults(List<Result> results) {
-        this.results = results;
+    public void setMovieInfos(List<MovieInfo> movieInfos) {
+        this.movieInfos = movieInfos;
     }
 
     /**

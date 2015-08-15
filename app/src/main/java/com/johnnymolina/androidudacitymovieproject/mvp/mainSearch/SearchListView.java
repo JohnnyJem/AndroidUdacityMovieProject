@@ -1,7 +1,7 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface SearchListView extends MvpView {
 
-    public void setData(List<Result> list);
+    public void setData(List<MovieInfo> list);
 
     public void showLoading();
 

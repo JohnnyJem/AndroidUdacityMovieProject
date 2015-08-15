@@ -20,7 +20,7 @@ import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
 import com.johnnymolina.androidudacitymovieproject.adapters.SearchListAdapter;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
 import com.johnnymolina.androidudacityspotifyproject.R;
@@ -142,7 +142,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     }
 
     @Override
-    public void setData(List<Result> list) {
+    public void setData(List<MovieInfo> list) {
         searchListAdapter.setMovies(list);
         searchListAdapter.notifyDataSetChanged();
     }

@@ -9,14 +9,14 @@ import java.util.List;
 /**
  * Created by Johnny on 8/5/2015.
  */
-public class ResponseReviewRequest {
+public class ReturnedReviews {
 
     @Expose private int id;
 
     @Expose private int page;
 
     @SerializedName("results")
-    @Expose private List<ResultReview> resultsReview = new ArrayList<>();
+    @Expose private List<MovieReviews> resultsReview = new ArrayList<>();
 
     @SerializedName("total_pages")
     @Expose private int totalPages;
@@ -65,7 +65,7 @@ public class ResponseReviewRequest {
      * @return
      * The results
      */
-    public List<ResultReview> getResultsReview() {
+    public List<MovieReviews> getResultsReview() {
         return resultsReview;
     }
 
@@ -74,7 +74,7 @@ public class ResponseReviewRequest {
      * @param results
      * The results
      */
-    public void setResultsReview(List<ResultReview> results) {
+    public void setResultsReview(List<MovieReviews> results) {
         this.resultsReview = results;
     }
 

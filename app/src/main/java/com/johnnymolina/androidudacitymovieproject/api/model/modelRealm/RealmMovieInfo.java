@@ -14,21 +14,15 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Johnny on 8/12/2015.
  */
-public class RealmResult extends RealmObject {
+public class RealmMovieInfo extends RealmObject {
 
     @PrimaryKey
     private int id;
-
     private String title;
-
     private String posterPath;
-
     private String releaseDate;
-
     private double voteAverage;
-
     private String overview;
-
 
     public int getId() {
         return id;

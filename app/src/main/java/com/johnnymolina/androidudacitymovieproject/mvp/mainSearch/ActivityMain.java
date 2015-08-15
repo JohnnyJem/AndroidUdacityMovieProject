@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
@@ -32,7 +32,7 @@ public class ActivityMain extends AppCompatActivity {
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private SearchFragment retainedFragment;
-    private Result result;
+    private MovieInfo movieInfo;
     private static final String VIEWSTATE0 = "0";
     private static final String VIEWSTATE1 = "1";
     private static final String VIEWSTATE2 = "2";
@@ -103,11 +103,8 @@ public class ActivityMain extends AppCompatActivity {
                         .replace(R.id.fragmentContainer, new SearchFragment(),VIEWSTATE1)
                         .commit();
             }
-
         }
     }
-
-
 
     @Override
     public void onStart() {
@@ -119,15 +116,15 @@ public class ActivityMain extends AppCompatActivity {
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
-                                if (event instanceof Result) {
-                                    initDetailFrag((Result) event);
+                                if (event instanceof MovieInfo) {
+                                    initDetailFrag((MovieInfo) event);
                                 }
                             }
                         }));
     }
 
-    private void initDetailFrag(Result result) {
-        this.result = result;
+    private void initDetailFrag(MovieInfo movieInfo) {
+        this.movieInfo = movieInfo;
         if(getResources().getBoolean(R.bool.dual_pane)) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -181,8 +178,8 @@ public class ActivityMain extends AppCompatActivity {
         mDrawer.openDrawer(GravityCompat.START);
     }
 
-    public Result getCurrentResult(){
-        return result;
+    public MovieInfo getCurrentResult(){
+        return movieInfo;
     }
 
 }

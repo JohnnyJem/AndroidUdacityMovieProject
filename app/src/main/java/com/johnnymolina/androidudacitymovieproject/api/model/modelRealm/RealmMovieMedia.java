@@ -1,16 +1,15 @@
-package com.johnnymolina.androidudacitymovieproject.api.model.modelPogo;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRealm;
 
-import com.google.gson.annotations.Expose;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Johnny on 8/13/2015.
  */
-public class ResultMedia1 {
-
+public class RealmMovieMedia extends RealmObject{
+    @PrimaryKey
     private String id;
-
     private String name;
-
     private String site;
 
     public String getId() {
@@ -36,5 +35,9 @@ public class ResultMedia1 {
     public void setSite(String site) {
         this.site = site;
     }
+
+
+
+
 
 }

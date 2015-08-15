@@ -3,12 +3,13 @@ package com.johnnymolina.androidudacitymovieproject.api.model.modelRealm;
 import com.google.gson.annotations.Expose;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Johnny on 8/13/2015.
  */
-public class RealmResultReview extends RealmObject {
-
+public class RealmMovieReviews extends RealmObject {
+    @PrimaryKey
     private String id;
     private String author;
     private String content;

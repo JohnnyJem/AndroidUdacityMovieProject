@@ -3,9 +3,8 @@ package com.johnnymolina.androidudacitymovieproject.mvp.mainSearch;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelPogo.Result1;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResponseSearchMovies;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedMovies;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -16,11 +15,12 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by Johnny Molina on 7/19/2015.
  */
-//TODO: Fix Model and Result Service to attach successfully with the setData() and the searchListAAdapter
+//TODO: Fix Model and Info Service to attach successfully with the setData() and the searchListAAdapter
 public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
     MovieService movieService;
-    List<Result> list;
+    List<MovieInfo> list;
     String previousQuery;
+
 
     public SearchListPresenter(MovieService movieService) {
         this.movieService = movieService;
@@ -44,7 +44,7 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
         movieService.movieSearch(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                 .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                 .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
-                .subscribe(new Subscriber<ResponseSearchMovies>() {//Attaching subscriber of type ____SearchResponse to the Observable
+                .subscribe(new Subscriber<ReturnedMovies>() {//Attaching subscriber of type ____SearchResponse to the Observable
                     @Override
                     public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                         if (isViewAttached()) {
@@ -60,14 +60,9 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
                     }
 
                     @Override
-                    public void onNext(ResponseSearchMovies movieSearchResponse) {
-                        list= movieSearchResponse.getResults();
-                        Result1.
-                        //map list into simple object
-
-
-
-
+                    public void onNext(ReturnedMovies movieSearchResponse) {
+                        list= movieSearchResponse.getMovieInfos();
+                        // map internal UI objects to Realm objects
                         if (isViewAttached()) {
                             getView().setData(list);
                         }

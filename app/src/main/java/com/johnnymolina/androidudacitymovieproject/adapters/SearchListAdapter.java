@@ -9,8 +9,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.extended.AutofitRecyclerView;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import java.util.List;
@@ -25,18 +25,18 @@ import butterknife.ButterKnife;
 public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAdapter.ViewHolder> {
 
     Glide glide;
-    private List<Result> movies;
+    private List<MovieInfo> movies;
     Context context;
 
     public SearchListAdapter( ) {
 
     }
 
-    public List<Result> getMovies() {
+    public List<MovieInfo> getMovies() {
         return movies ;
     }
 
-    public void setMovies(List<Result> movies) {
+    public void setMovies(List<MovieInfo> movies) {
         this.movies = movies;
     }
 
@@ -61,7 +61,7 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Result movie = movies.get(position);
+        MovieInfo movie = movies.get(position);
         String imageUrl = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
         String ObjectCheck = String.valueOf(movies.size());
 

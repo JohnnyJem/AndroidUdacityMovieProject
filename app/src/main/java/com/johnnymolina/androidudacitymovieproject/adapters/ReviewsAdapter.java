@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReviews;
 import com.johnnymolina.androidudacityspotifyproject.R;
 
 import java.util.List;
@@ -20,17 +20,17 @@ import butterknife.ButterKnife;
  */
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
 
-    List<ResultReview> reviews;
+    List<MovieReviews> reviews;
     Context context;
 
     public ReviewsAdapter() {
     }
 
-    public void setReviews(List<ResultReview> reviews) {
+    public void setReviews(List<MovieReviews> reviews) {
         this.reviews = reviews;
     }
 
-    public List<ResultReview> getReviews() {
+    public List<MovieReviews> getReviews() {
         return reviews ;
     }
 
@@ -55,7 +55,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ResultReview review = reviews.get(position);
+        MovieReviews review = reviews.get(position);
         holder.authorTextView.setText(review.getAuthor());
         holder.contentTextView.setText(review.getContent());
         holder.authorTextView.setTextColor(context.getResources().getColor(R.color.primary_dark_material_light));

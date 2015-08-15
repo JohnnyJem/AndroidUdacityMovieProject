@@ -25,7 +25,7 @@ public class SearchListViewState implements RestoreableViewState<SearchListView>
     @Override
     public RestoreableViewState<SearchListView> restoreInstanceState(Bundle in) {
         currentState = in.getInt(KEY_STATE);
-        return restoreInstanceState(in);  //not quite sure why we are reutnin
+        return restoreInstanceState(in);  //not quite sure why we are returning
     }
 
 

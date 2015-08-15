@@ -9,14 +9,14 @@ import java.util.List;
 /**
  * Created by Johnny on 8/5/2015.
  */
-public class ResponseMediaRequest {
+public class ReturnedMedia {
 
         @Expose
         private int id;
 
         @SerializedName("results")
         @Expose
-        private List<ResultMedia> resultsMedia = new ArrayList<>();
+        private List<MovieMedia> resultsMedia = new ArrayList<>();
 
         /**
          *
@@ -41,7 +41,7 @@ public class ResponseMediaRequest {
          * @return
          * The resultsMedia
          */
-        public List<ResultMedia> getResultsMedia() {
+        public List<MovieMedia> getResultsMedia() {
                 return resultsMedia;
         }
 
@@ -50,7 +50,7 @@ public class ResponseMediaRequest {
          * @param resultsMedia
          * The resultsMedia
          */
-        public void setResultsMedia(List<ResultMedia> resultsMedia) {
+        public void setResultsMedia(List<MovieMedia> resultsMedia) {
                 this.resultsMedia = resultsMedia;
         }
 }

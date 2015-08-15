@@ -24,9 +24,9 @@ import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.adapters.ReviewsAdapter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Result;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultMedia;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ResultReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReviews;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacityspotifyproject.R;
@@ -67,7 +67,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     private static final String VIEWSTATE1 = "1";
     private static final String VIEWSTATE2 = "2";
 
-    Result retainedResult;
+    MovieInfo retainedMovieInfo;
 
     // using a retained fragment to hold the ViewState
     // and the adapter for the RecyclerView
@@ -126,8 +126,8 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onStart() {
         super.onStart();
-        if (retainedResult!=null) {
-            presenter.setDetails(retainedResult);
+        if (retainedMovieInfo !=null) {
+            presenter.setDetails(retainedMovieInfo);
         }else {
             presenter.setDetails(((ActivityMain) getActivity()).getCurrentResult());
         }
@@ -160,17 +160,17 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setData(Result result) {
-            retainedResult = result;
+    public void setData(MovieInfo movieInfo) {
+            retainedMovieInfo = movieInfo;
 
             ((ActivityMain) getActivity()).getSupportActionBar().setTitle("Movie Details");
             linearLayout.setVisibility(View.VISIBLE);
-            title.setText(result.getTitle());
-            plot.setText(result.getOverview());
-            userRating.setText("" + String.valueOf(result.getVoteAverage()) + "/10");
-            releaseDate.setText(result.getReleaseDate().substring(0, 4));
+            title.setText(movieInfo.getTitle());
+            plot.setText(movieInfo.getOverview());
+            userRating.setText("" + String.valueOf(movieInfo.getVoteAverage()) + "/10");
+            releaseDate.setText(movieInfo.getReleaseDate().substring(0, 4));
 
-            String imageUrl = "http://image.tmdb.org/t/p/w185/" + result.getPosterPath();
+            String imageUrl = "http://image.tmdb.org/t/p/w185/" + movieInfo.getPosterPath();
             Glide.with(this)
                     .load(imageUrl)
                     .asBitmap()
@@ -181,18 +181,18 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setDataMedia(final List<ResultMedia> resultMedia) {
+    public void setDataMedia(final List<MovieMedia> movieMedia) {
         if (detailMediaLinearLayout.getChildCount()==0) {
-            for (final ResultMedia resultMediaTemp : resultMedia) {
+            for (final MovieMedia movieMediaTemp : movieMedia) {
                 TextView linkTextView = new TextView(getActivity());
-                linkTextView.setText(resultMediaTemp.getName());
+                linkTextView.setText(movieMediaTemp.getName());
                 linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 detailMediaLinearLayout.addView(linkTextView);
                 linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
                 linkTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + resultMediaTemp.getKey())));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieMediaTemp.getKey())));
                     }
                 });
             }
@@ -206,7 +206,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setDataReview(List<ResultReview> resultsReview) {
+    public void setDataReview(List<MovieReviews> resultsReview) {
         reviewsAdapter.setReviews(resultsReview);
         reviewsAdapter.notifyDataSetChanged();
     }

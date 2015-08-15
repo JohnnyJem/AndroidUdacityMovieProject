@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Johnny on 8/5/2015.
  */
-public class ResultMedia {
+public class MovieMedia {
 
     @Expose private String id;
 

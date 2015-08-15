@@ -3,6 +3,8 @@ package com.johnnymolina.androidudacitymovieproject;
 import android.app.Application;
 import android.content.Context;
 
+import com.johnnymolina.androidudacitymovieproject.api.model.DataService;
+import com.johnnymolina.androidudacitymovieproject.api.model.RealmDataService;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 
 import javax.inject.Singleton;
@@ -19,6 +21,7 @@ import dagger.Provides;
 public class AppModule {
     private MovieApplication movieApplication;
     private RxBus _rxBus = null;
+    private DataService dataService;
 
     public AppModule(MovieApplication movieApplication){
         this.movieApplication = movieApplication;
@@ -37,6 +40,14 @@ public class AppModule {
             _rxBus = new RxBus();
         }
         return _rxBus;
+    }
+
+    @Provides @Singleton
+    public DataService provideDataService(MovieApplication movieApplication){
+        if (dataService==null) {
+            dataService = new RealmDataService(movieApplication);
+        }
+        return dataService;
     }
 
 }
