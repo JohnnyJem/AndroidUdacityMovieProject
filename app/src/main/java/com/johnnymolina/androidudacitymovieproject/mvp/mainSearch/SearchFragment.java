@@ -109,11 +109,13 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     public void onStart() {
         super.onStart();
         presenter.setMovies();
+        presenter.startCompositeSubscription(movieApplication);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        presenter.stopCompositeSubscription();
     }
 
     //Injecting our dagger dependencies

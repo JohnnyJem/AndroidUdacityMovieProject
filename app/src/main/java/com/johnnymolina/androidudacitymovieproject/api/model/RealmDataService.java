@@ -3,17 +3,15 @@ package com.johnnymolina.androidudacitymovieproject.api.model;
 
 import android.content.Context;
 
-import com.johnnymolina.androidudacitymovieproject.api.model.modelPogo.Info;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelPogo.Returned;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Info;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Returned;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovies;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.rx.RealmObservable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import clojure.asm.Label;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -26,7 +24,7 @@ public class RealmDataService implements DataService {
     private final Context context;
 
     public RealmDataService(Context context) {
-        this.context = context.getApplicationContext();
+        this.context = context; // should always be an Application context.
     }
 
     @Override
@@ -101,12 +99,8 @@ public class RealmDataService implements DataService {
    // private static User userFromRealm(RealmUser realmUser) {  // An extra method example for future use
      //   return new User(realmUser.getLogin());
     //}
-
     private static Info infoFromRealm(RealmMovieInfo realmMovieInfo) {
         return new Info(realmMovieInfo.getId(),realmMovieInfo.getTitle(),realmMovieInfo.getPosterPath(),realmMovieInfo.getReleaseDate(),realmMovieInfo.getVoteAverage(),realmMovieInfo.getOverview());
     }
-
-
-
 
 }

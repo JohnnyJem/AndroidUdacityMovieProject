@@ -36,6 +36,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import io.realm.Realm;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -50,6 +51,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Inject RxBus _rxBus;
     private CompositeSubscription _subscriptions;
     AppComponent appComponent;
+    Realm realm;
 
     @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
     @Bind(R.id.detail_media_linear_layout) LinearLayout detailMediaLinearLayout;
@@ -131,12 +133,13 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         }else {
             presenter.setDetails(((ActivityMain) getActivity()).getCurrentResult());
         }
+        presenter.startCompositeSubscription(movieApplication); //for realm + rxjava
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
+        presenter.stopCompositeSubscription(); // for realm + rxjava
     }
 
     @Override

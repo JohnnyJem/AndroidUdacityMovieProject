@@ -1,6 +1,5 @@
-package com.johnnymolina.androidudacitymovieproject.api.model.modelPogo;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRx;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

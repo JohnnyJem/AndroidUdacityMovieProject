@@ -1,9 +1,8 @@
 package com.johnnymolina.androidudacitymovieproject.api.model;
 
 
-import com.johnnymolina.androidudacitymovieproject.api.model.modelPogo.Info;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelPogo.Returned;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Info;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Returned;
 
 import java.util.List;
 

@@ -1,6 +1,4 @@
-package com.johnnymolina.androidudacitymovieproject.api.model.modelPogo;
-
-import com.google.gson.annotations.Expose;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRx;
 
 /**
  * Created by Johnny on 8/13/2015.

@@ -7,6 +7,8 @@ import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Movie
 
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * Created by Johnny Molina on 7/19/2015.
  */

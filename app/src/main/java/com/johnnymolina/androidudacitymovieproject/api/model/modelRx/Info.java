@@ -1,4 +1,4 @@
-package com.johnnymolina.androidudacitymovieproject.api.model.modelPogo;
+package com.johnnymolina.androidudacitymovieproject.api.model.modelRx;
 
 /**
  * Created by Johnny on 8/12/2015.
