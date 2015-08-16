@@ -15,11 +15,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.dd.realmbrowser.RealmBrowser;
+import com.dd.realmbrowser.RealmFilesActivity;
 import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
 import com.johnnymolina.androidudacitymovieproject.adapters.SearchListAdapter;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieReviews;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovies;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
@@ -68,6 +74,10 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
+
+        RealmBrowser.getInstance().addRealmModel(RealmReturnedMovies.class,RealmMovieInfo.class, RealmMovieMedia.class,
+                RealmMovieReviews.class);
+
     }
 
     @Override
@@ -215,6 +225,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             case "highest_rated":
                 presenter.searchForMovies("vote_count.desc");
                 return;
+            case"favorites":
+                RealmFilesActivity.start(getActivity());
             default:
                 return;
         }

@@ -15,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by Johnny on 8/12/2015.
  */
 public class RealmMovieInfo extends RealmObject {
-    //Decide whether to issue primary key or not. Seems to have issues.
+    @PrimaryKey
     private int id;
     private String title;
     private String posterPath;

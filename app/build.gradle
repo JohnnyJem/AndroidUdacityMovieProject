@@ -41,7 +41,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.1.1'
 
-
     //DI dependencies
     compile 'javax.annotation:javax.annotation-api:1.2'
     compile 'javax.inject:javax.inject:1'
@@ -49,7 +48,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:' +  rootProject.ext.butterknifeVersion
     compile 'com.google.dagger:dagger:' + rootProject.ext.dagger2Version
     apt 'com.google.dagger:dagger-compiler:' + rootProject.ext.dagger2Version //uses the plugin com.neenbedankt.android-apt
-
 
     //Other dependencies
     compile 'frankiesardo:icepick:' + rootProject.ext.icepickVersion
@@ -63,8 +61,6 @@ dependencies {
     compile 'com.hannesdorfmann.mosby:viewstate:1.2.0'
     compile 'com.hannesdorfmann.mosby:rx:1.2.0'
 
-
-
     //networking
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
@@ -74,5 +70,6 @@ dependencies {
 
     // Realm
     compile 'io.realm:realm-android:0.80.0'
+    compile 'com.github.dmytrodanylyk.realm-browser:library:0.0.3'
 
 }
