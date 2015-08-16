@@ -29,7 +29,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 //TODO: Fix Model and Info Service to attach successfully with the setData() and the searchListAAdapter
 public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
-    private final String TAG = getClass().getName().toString();
+    String TAG = getClass().getName().toString();
 
     MovieService movieService;
     DataService dataService;
@@ -53,8 +53,8 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
         compositeSubscription.unsubscribe();
     }
 
-
-    private void requestAllMovies() {
+    //to be used to request all movies that have been saved to Realm.a.k.a  users "favorite" movies.
+    public void requestAllMovies() {
         Subscription subscription = dataService.returnedList().
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
@@ -74,11 +74,11 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
                 );
 
         if (compositeSubscription != null) {
-            compositeSubscription.add(subscription);
+            //compositeSubscription.add(subscription);
         }
     }
 
-    private void removeMovie(){
+    public void removeMovie(){
 
     }
 
@@ -86,6 +86,7 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
     public void setMovies(){
         if (list!=null) {
             getView().setData(list);
+            getView().showSearchList();
         }else{
             searchForMovies(previousQuery);
         }
@@ -98,7 +99,7 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
             getView().showLoading();//grabbing the view reference
         }
         //we ask the presenter to perform a search with a query
-        movieService.movieSearch(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
+        movieService.movieSearch(previousQuery, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                 .delay(5, TimeUnit.SECONDS) //wait 5 seconds
                 .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
                 .subscribe(new Subscriber<ReturnedMovies>() {//Attaching subscriber of type ____SearchResponse to the Observable
@@ -118,7 +119,8 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
 
                     @Override
                     public void onNext(ReturnedMovies movieSearchResponse) {
-                        list= movieSearchResponse.getMovieInfos();
+                        list = movieSearchResponse.getMovieInfos();
+                        //Todo: convert this Retrofit object into an immutable pojo too
                         // map internal UI objects to Realm objects
                         if (isViewAttached()) {
                             getView().setData(list);
@@ -127,9 +129,4 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
                 });
     }
 
-
-    //Todo: Implement Realm.io here. Return data as an arraylist.
-    public void searchForFavoriteMovies() {
-
-    }
 }

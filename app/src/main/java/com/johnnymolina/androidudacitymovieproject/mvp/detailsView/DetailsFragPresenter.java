@@ -55,7 +55,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         compositeSubscription.unsubscribe();
     }
 
-    private void requestAllMovies() {
+    public void requestAllMovies() {
         //grabbing a returnedList
 
         Subscription subscription = dataService.returnedList().
@@ -80,7 +80,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         }
     }
 
-    private void addMovie() {
+    public void addMovie() {
         //setting our Retrofit Object Models fields to an immutable POGO to be used in the RxJava stream
         // and ultimately have its feilds set to a realm object.
         int id = movieInfo.getId();
@@ -101,6 +101,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                             @Override
                             public void call(Returned returnedList) {
                                 Log.d(TAG, "Issue with title " + returnedList.getInfoList().get(0).getTitle() + " successfully saved");
+                                //Todo: change all set__() methods to accept these immutable objects instead.
                             }
                         },
                         new Action1<Throwable>() {
@@ -118,8 +119,9 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
     public void setDetails(MovieInfo currentMovieInfo) {
         if (isViewAttached()) {
-            if (this.movieInfo ==null) {
+            if (this.movieInfo == null) {
                 this.movieInfo = currentMovieInfo;
+                //Todo: change this to reference and take as arguments the immutable pojo
             }
 
             getView().showSearchList();//If view IS attached then show the searchList
@@ -168,6 +170,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                         @Override
                         public void onNext(ReturnedMedia movieMediaRequestResponse) {
                             resultsMediaList = movieMediaRequestResponse.getResultsMedia();
+                            //Todo: convert this Retrofit object into an immutable pojo too
                             if (isViewAttached()) {
                                 getView().setDataMedia(resultsMediaList);
                             }
@@ -204,6 +207,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                     @Override
                     public void onNext(ReturnedReviews movieReviewRequestResponse) {
                         resultsReviewList = movieReviewRequestResponse.getResultsReview();
+                        //Todo: convert this Retrofit object into an immutable pojo too.
                         if (isViewAttached()) {
                             getView().setDataReview(resultsReviewList);
                         }

@@ -10,17 +10,12 @@ import java.util.List;
  * Created by Johnny on 8/5/2015.
  */
 public class ReturnedReviews {
-
     @Expose private int id;
-
     @Expose private int page;
-
     @SerializedName("results")
     @Expose private List<MovieReviews> resultsReview = new ArrayList<>();
-
     @SerializedName("total_pages")
     @Expose private int totalPages;
-
     @SerializedName("total_results")
     @Expose private int totalResults;
 

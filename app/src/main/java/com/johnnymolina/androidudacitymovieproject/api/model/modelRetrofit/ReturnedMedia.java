@@ -11,12 +11,9 @@ import java.util.List;
  */
 public class ReturnedMedia {
 
-        @Expose
-        private int id;
-
+        @Expose private int id;
         @SerializedName("results")
-        @Expose
-        private List<MovieMedia> resultsMedia = new ArrayList<>();
+        @Expose private List<MovieMedia> resultsMedia = new ArrayList<>();
 
         /**
          *

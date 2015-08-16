@@ -42,11 +42,9 @@ public class AppModule {
         return _rxBus;
     }
 
-    @Provides @Singleton
+    @Provides
     public DataService provideDataService(MovieApplication movieApplication){
-        if (dataService==null) {
-            dataService = new RealmDataService(movieApplication);
-        }
+        dataService = new RealmDataService(movieApplication);
         return dataService;
     }
 

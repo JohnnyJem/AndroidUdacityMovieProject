@@ -10,12 +10,10 @@ import java.util.ArrayList;
 public class ReturnedMovies {
 
     @Expose private int page;
-
+    @SerializedName("results")
     @Expose private List<MovieInfo> movieInfos = new ArrayList<MovieInfo>();
-
     @SerializedName("total_pages")
     @Expose private int totalPages;
-
     @SerializedName("total_results")
     @Expose private int totalResults;
 

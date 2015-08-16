@@ -11,42 +11,28 @@ import java.util.List;
 
 public class MovieInfo {
 
-    @Expose
-    private boolean adult;
+    @Expose private boolean adult;
     @SerializedName("backdrop_path")
-    @Expose
-    private String backdropPath;
+    @Expose private String backdropPath;
     @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = new ArrayList<Integer>();
-    @Expose
-    private int id;
+    @Expose private List<Integer> genreIds = new ArrayList<Integer>();
+    @Expose private int id;
     @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
+    @Expose private String originalLanguage;
     @SerializedName("original_title")
-    @Expose
-    private String originalTitle;
-    @Expose
-    private String overview;
+    @Expose private String originalTitle;
+    @Expose private String overview;
     @SerializedName("release_date")
-    @Expose
-    private String releaseDate;
+    @Expose private String releaseDate;
     @SerializedName("poster_path")
-    @Expose
-    private String posterPath;
-    @Expose
-    private double popularity;
-    @Expose
-    private String title;
-    @Expose
-    private boolean video;
+    @Expose private String posterPath;
+    @Expose private double popularity;
+    @Expose private String title;
+    @Expose private boolean video;
     @SerializedName("vote_average")
-    @Expose
-    private double voteAverage;
+    @Expose private double voteAverage;
     @SerializedName("vote_count")
-    @Expose
-    private int voteCount;
+    @Expose private int voteCount;
 
     /**
      *

@@ -109,13 +109,13 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     public void onStart() {
         super.onStart();
         presenter.setMovies();
-        presenter.startCompositeSubscription(movieApplication);
+        //presenter.startCompositeSubscription(movieApplication);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        presenter.stopCompositeSubscription();
+        //presenter.stopCompositeSubscription();
     }
 
     //Injecting our dagger dependencies
@@ -215,8 +215,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             case "highest_rated":
                 presenter.searchForMovies("vote_count.desc");
                 return;
-            case "favorites":
-                presenter.searchForFavoriteMovies();
+            default:
+                return;
         }
     }
 

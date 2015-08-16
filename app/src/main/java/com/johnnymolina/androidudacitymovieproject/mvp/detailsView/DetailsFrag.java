@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import io.realm.Realm;
 import rx.subscriptions.CompositeSubscription;
 
@@ -60,6 +62,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Bind(R.id.detail_user_rating) TextView userRating;
     @Bind(R.id.detail_release_date) TextView releaseDate;
     @Bind(R.id.detail_image) ImageView image;
+    @Bind(R.id.favorite_star) ImageButton favoriteStarButton;
     @Bind(R.id.rv_movie_reviews) RecyclerView recyclerView;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
 
@@ -131,9 +134,10 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         if (retainedMovieInfo !=null) {
             presenter.setDetails(retainedMovieInfo);
         }else {
+            if ((((ActivityMain) getActivity()).getCurrentResult())!=null)
             presenter.setDetails(((ActivityMain) getActivity()).getCurrentResult());
         }
-        presenter.startCompositeSubscription(movieApplication); //for realm + rxjava
+        presenter.startCompositeSubscription(movieApplication.getApplicationContext()); //for realm + rxjava
     }
 
     @Override
@@ -239,6 +243,14 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
         Toast.makeText(getActivity(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
     }
+
+    @OnClick(R.id.favorite_star)
+    public void onClickStarButton(ImageButton button){
+        presenter.addMovie();
+        button.setPressed(true);
+    }
+
+
 
 
 }
