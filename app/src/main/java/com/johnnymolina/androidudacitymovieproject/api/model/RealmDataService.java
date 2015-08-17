@@ -68,18 +68,24 @@ public class RealmDataService implements DataService {
         final RealmList<RealmMovieMedia> realmMediaList = new RealmList<RealmMovieMedia>();
         for (Media media : mediaList){
         RealmMovieMedia realmMovieMedia = new RealmMovieMedia();
-            realmMovieMedia.setId(media.getId());
+
+            realmMovieMedia.setId(String.valueOf(info.getId()));
             realmMovieMedia.setName(media.getName());
             realmMovieMedia.setSite(media.getSite());
+
+            realmMediaList.add(realmMovieMedia);
         }
 
         final RealmList<RealmMovieReview> realmMovieReviewList = new RealmList<RealmMovieReview>();
         for (Review review : reviewList){
             RealmMovieReview realmMovieReview = new RealmMovieReview();
-                realmMovieReview.setId(review.getId());
+
+                realmMovieReview.setId(String.valueOf(info.getId()));
                 realmMovieReview.setAuthor(review.getAuthor());
                 realmMovieReview.setContent(review.getContent());
                 realmMovieReview.setUrl(review.getUrl());
+
+                realmMovieReviewList.add(realmMovieReview);
         }
 
         return RealmObservable.object(context, new Func1<Realm, RealmReturnedMovie>() {
@@ -98,8 +104,6 @@ public class RealmDataService implements DataService {
                 for (RealmMovieReview realmReview : realmMovieReviewList){
                     reviews.add(realm.copyToRealm(realmReview));
                 }
-
-
                 // create RealmIssue instance and save it
                 RealmReturnedMovie returnedMovies = new RealmReturnedMovie();
                 returnedMovies.setId(id);

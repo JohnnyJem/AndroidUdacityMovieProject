@@ -133,6 +133,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         super.onStart();
         if (retainedMovieInfo !=null) {
             presenter.setDetails(retainedMovieInfo);
+
         }else {
             if ((((ActivityMain) getActivity()).getCurrentResult())!=null)
             presenter.setDetails(((ActivityMain) getActivity()).getCurrentResult());
@@ -189,6 +190,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public void setDataMedia(final List<MovieMedia> movieMedia) {
+
         if (detailMediaLinearLayout.getChildCount()==0) {
             for (final MovieMedia movieMediaTemp : movieMedia) {
                 TextView linkTextView = new TextView(getActivity());
@@ -246,6 +248,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @OnClick(R.id.favorite_star)
     public void onClickStarButton(ImageButton button){
+        //Todo: need to add wait function before alllowing presenter.addNewMovie() to be called.
         presenter.addNewMovie();
         button.setPressed(true);
     }

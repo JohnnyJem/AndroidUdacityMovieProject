@@ -61,7 +61,6 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
     public void requestAllMovies() {
         //grabbing a returnedList
-
         Subscription subscription = dataService.returnedList().
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
@@ -93,10 +92,12 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
         for (MovieMedia media : returnedMediaList){
            medias.add(new Media(media.getId(),media.getName(),media.getSite()));
+            Log.e("Media", media.getName());
         }
 
         for (MovieReview review : returnedReviewList){
             reviews.add(new Review(review.getId(),review.getAuthor(),review.getContent(),review.getUrl()));
+            Log.e("Review", review.getAuthor());
         }
 
         Subscription subscription = dataService.newReturnedList(movieInfo.getId(),info,medias,reviews).
@@ -107,6 +108,8 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                             @Override
                             public void call(Returned returnedList) {
                                 Log.d(TAG, "Issue with title " + returnedList.getInfo().getTitle() + " successfully saved");
+                                String mediaAuthor = returnedList.getMediaList().size() > 0 ? returnedList.getMediaList().get(0).getName() : "empty list";
+                                Log.e("Media", mediaAuthor);
                                 //Todo: change all set__() methods to accept these immutable objects instead.
                             }
                         },

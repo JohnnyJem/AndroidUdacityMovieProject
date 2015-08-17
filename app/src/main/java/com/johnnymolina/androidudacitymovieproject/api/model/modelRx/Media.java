@@ -4,9 +4,9 @@ package com.johnnymolina.androidudacitymovieproject.api.model.modelRx;
  * Created by Johnny on 8/13/2015.
  */
 public class Media {
-    private String id;
-    private String name;
-    private String site;
+    private final String id;
+    private final String name;
+    private final String site;
 
     public Media(String id, String name, String site) {
         this.id = id;
