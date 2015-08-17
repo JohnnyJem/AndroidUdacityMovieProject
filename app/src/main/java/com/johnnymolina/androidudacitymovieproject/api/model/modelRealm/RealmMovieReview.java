@@ -8,8 +8,8 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Johnny on 8/13/2015.
  */
-public class RealmMovieReviews extends RealmObject {
-    @PrimaryKey
+public class RealmMovieReview extends RealmObject {
+
     private String id;
     private String author;
     private String content;

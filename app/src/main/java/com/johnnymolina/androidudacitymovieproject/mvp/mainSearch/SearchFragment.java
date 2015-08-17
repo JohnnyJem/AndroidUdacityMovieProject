@@ -24,8 +24,8 @@ import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieMedia;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieReviews;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovies;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.extended.RecyclerItemClickListener;
@@ -75,8 +75,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
         super.onActivityCreated(savedInstanceState);
         ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
 
-        RealmBrowser.getInstance().addRealmModel(RealmReturnedMovies.class,RealmMovieInfo.class, RealmMovieMedia.class,
-                RealmMovieReviews.class);
+        RealmBrowser.getInstance().addRealmModel(RealmReturnedMovie.class,RealmMovieInfo.class, RealmMovieMedia.class,
+                RealmMovieReview.class);
 
     }
 

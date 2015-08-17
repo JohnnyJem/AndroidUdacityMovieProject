@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 /**
  * Created by Johnny on 8/5/2015.
  */
-public class MovieReviews {
+public class MovieReview {
 
     @Expose private String id;
     @Expose private String author;

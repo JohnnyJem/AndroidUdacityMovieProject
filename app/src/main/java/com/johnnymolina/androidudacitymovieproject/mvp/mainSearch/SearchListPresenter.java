@@ -78,9 +78,6 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
         }
     }
 
-    public void removeMovie(){
-
-    }
 
 
     public void setMovies(){

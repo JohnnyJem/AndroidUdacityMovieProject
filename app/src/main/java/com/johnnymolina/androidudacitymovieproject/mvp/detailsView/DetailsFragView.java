@@ -3,11 +3,9 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReviews;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
 
 import java.util.List;
-
-import io.realm.Realm;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
@@ -18,7 +16,7 @@ public interface DetailsFragView extends MvpView {
 
     public void setDataMedia(List<MovieMedia> resultsMedia);
 
-    public void setDataReview(List<MovieReviews> resultsReview);
+    public void setDataReview(List<MovieReview> resultsReview);
 
     public void showLoading();
 

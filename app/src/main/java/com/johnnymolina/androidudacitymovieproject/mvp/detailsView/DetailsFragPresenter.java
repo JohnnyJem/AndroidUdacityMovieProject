@@ -8,13 +8,15 @@ import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
 import com.johnnymolina.androidudacitymovieproject.api.model.DataService;
 import com.johnnymolina.androidudacitymovieproject.api.model.RealmDataService;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReviews;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedReviews;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Info;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Media;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Returned;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +38,11 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
     MovieService movieService;
     DataService dataService;
     CompositeSubscription compositeSubscription;
-    List<MovieMedia> resultsMediaList;
-    List<MovieReviews> resultsReviewList;
+
     MovieInfo movieInfo;
+    List<MovieMedia> returnedMediaList;
+    List<MovieReview> returnedReviewList;
+
     String previousMediaQuery;
     String previousReviewQuery;
 
@@ -80,27 +84,29 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         }
     }
 
-    public void addMovie() {
+    public void addNewMovie() {
         //setting our Retrofit Object Models fields to an immutable POGO to be used in the RxJava stream
         // and ultimately have its feilds set to a realm object.
-        int id = movieInfo.getId();
-        String title = movieInfo.getTitle();
-        String posterPath = movieInfo.getPosterPath();
-        String releaseDate = movieInfo.getReleaseDate();
-        double voteAverage = movieInfo.getVoteAverage();
-        String overview = movieInfo.getOverview();
+        Info info = new Info(movieInfo.getId(), movieInfo.getTitle(),  movieInfo.getPosterPath(), movieInfo.getReleaseDate(),movieInfo.getVoteAverage(), movieInfo.getOverview());
+        List<Media> medias= new ArrayList<>();
+        List<Review> reviews = new ArrayList<>();
 
-        List<Info> infos = new ArrayList<>();
-        infos.add(new Info(id, title,  posterPath, releaseDate,voteAverage, overview));
+        for (MovieMedia media : returnedMediaList){
+           medias.add(new Media(media.getId(),media.getName(),media.getSite()));
+        }
 
-        Subscription subscription = dataService.newReturnedList(infos).
+        for (MovieReview review : returnedReviewList){
+            reviews.add(new Review(review.getId(),review.getAuthor(),review.getContent(),review.getUrl()));
+        }
+
+        Subscription subscription = dataService.newReturnedList(movieInfo.getId(),info,medias,reviews).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(
                         new Action1<Returned>() {
                             @Override
                             public void call(Returned returnedList) {
-                                Log.d(TAG, "Issue with title " + returnedList.getInfoList().get(0).getTitle() + " successfully saved");
+                                Log.d(TAG, "Issue with title " + returnedList.getInfo().getTitle() + " successfully saved");
                                 //Todo: change all set__() methods to accept these immutable objects instead.
                             }
                         },
@@ -127,13 +133,13 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             getView().showSearchList();//If view IS attached then show the searchList
             getView().setData(movieInfo);
 
-            if (resultsMediaList!=null) {
-                getView().setDataMedia(resultsMediaList);
+            if (returnedMediaList !=null) {
+                getView().setDataMedia(returnedMediaList);
             }else{
                 requestMovieMedia();
             }
-            if (resultsReviewList!=null) {
-                getView().setDataReview(resultsReviewList);
+            if (returnedReviewList !=null) {
+                getView().setDataReview(returnedReviewList);
             }else{
                 requestMovieReviews();
             }
@@ -169,10 +175,10 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
                         @Override
                         public void onNext(ReturnedMedia movieMediaRequestResponse) {
-                            resultsMediaList = movieMediaRequestResponse.getResultsMedia();
+                            returnedMediaList = movieMediaRequestResponse.getResultsMedia();
                             //Todo: convert this Retrofit object into an immutable pojo too
                             if (isViewAttached()) {
-                                getView().setDataMedia(resultsMediaList);
+                                getView().setDataMedia(returnedMediaList);
                             }
                         }
                     });
@@ -206,10 +212,10 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
                     @Override
                     public void onNext(ReturnedReviews movieReviewRequestResponse) {
-                        resultsReviewList = movieReviewRequestResponse.getResultsReview();
+                        returnedReviewList = movieReviewRequestResponse.getResultsReview();
                         //Todo: convert this Retrofit object into an immutable pojo too.
                         if (isViewAttached()) {
-                            getView().setDataReview(resultsReviewList);
+                            getView().setDataReview(returnedReviewList);
                         }
                     }
                 });

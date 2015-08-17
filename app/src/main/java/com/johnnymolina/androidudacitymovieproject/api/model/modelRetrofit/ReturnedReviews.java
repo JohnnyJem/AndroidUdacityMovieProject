@@ -13,7 +13,7 @@ public class ReturnedReviews {
     @Expose private int id;
     @Expose private int page;
     @SerializedName("results")
-    @Expose private List<MovieReviews> resultsReview = new ArrayList<>();
+    @Expose private List<MovieReview> resultsReview = new ArrayList<>();
     @SerializedName("total_pages")
     @Expose private int totalPages;
     @SerializedName("total_results")
@@ -60,7 +60,7 @@ public class ReturnedReviews {
      * @return
      * The results
      */
-    public List<MovieReviews> getResultsReview() {
+    public List<MovieReview> getResultsReview() {
         return resultsReview;
     }
 
@@ -69,7 +69,7 @@ public class ReturnedReviews {
      * @param results
      * The results
      */
-    public void setResultsReview(List<MovieReviews> results) {
+    public void setResultsReview(List<MovieReview> results) {
         this.resultsReview = results;
     }
 

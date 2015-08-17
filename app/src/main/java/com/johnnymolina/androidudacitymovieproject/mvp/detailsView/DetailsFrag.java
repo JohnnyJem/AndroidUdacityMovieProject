@@ -27,7 +27,7 @@ import com.johnnymolina.androidudacitymovieproject.adapters.ReviewsAdapter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReviews;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacityspotifyproject.R;
@@ -213,7 +213,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setDataReview(List<MovieReviews> resultsReview) {
+    public void setDataReview(List<MovieReview> resultsReview) {
         reviewsAdapter.setReviews(resultsReview);
         reviewsAdapter.notifyDataSetChanged();
     }
@@ -246,7 +246,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @OnClick(R.id.favorite_star)
     public void onClickStarButton(ImageButton button){
-        presenter.addMovie();
+        presenter.addNewMovie();
         button.setPressed(true);
     }
 

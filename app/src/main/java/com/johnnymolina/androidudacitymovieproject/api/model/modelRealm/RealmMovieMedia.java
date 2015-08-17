@@ -7,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by Johnny on 8/13/2015.
  */
 public class RealmMovieMedia extends RealmObject{
-    @PrimaryKey
+
     private String id;
     private String name;
     private String site;

@@ -15,7 +15,6 @@ import io.realm.annotations.PrimaryKey;
  * Created by Johnny on 8/12/2015.
  */
 public class RealmMovieInfo extends RealmObject {
-    @PrimaryKey
     private int id;
     private String title;
     private String posterPath;
