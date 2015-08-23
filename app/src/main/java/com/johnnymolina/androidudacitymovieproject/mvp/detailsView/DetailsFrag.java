@@ -2,6 +2,7 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -21,10 +22,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
-import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.adapters.ReviewsAdapter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
@@ -39,7 +41,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.OnClick;
 import io.realm.Realm;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,10 +51,10 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Inject MovieService movieService;
     @Inject MovieApplication movieApplication;
-    @Inject RxBus _rxBus;
-    private CompositeSubscription _subscriptions;
-    AppComponent appComponent;
-    Realm realm;
+    @Inject RxBus rxBus;
+    @Inject SharedPreferences sharedPreferences;
+    @Inject Realm realm;
+
 
     @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
     @Bind(R.id.detail_media_linear_layout) LinearLayout detailMediaLinearLayout;
@@ -66,24 +67,18 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Bind(R.id.rv_movie_reviews) RecyclerView recyclerView;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
 
-
-
-    private static final String VIEWSTATE0 = "0";
-    private static final String VIEWSTATE1 = "1";
-    private static final String VIEWSTATE2 = "2";
-
-    MovieInfo retainedMovieInfo;
-
-    // using a retained fragment to hold the ViewState
+    int loadState = 0;
+    boolean saved = false;
+    // using a retained fragment to hold the ViewSta    te
     // and the adapter for the RecyclerView
     ReviewsAdapter reviewsAdapter;
+    int savedMovieID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(false);
-
     }
 
     @Override
@@ -131,20 +126,13 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onStart() {
         super.onStart();
-        if (retainedMovieInfo !=null) {
-            presenter.setDetails(retainedMovieInfo);
-
-        }else {
-            if ((((ActivityMain) getActivity()).getCurrentResult())!=null)
-            presenter.setDetails(((ActivityMain) getActivity()).getCurrentResult());
-        }
-        presenter.startCompositeSubscription(movieApplication.getApplicationContext()); //for realm + rxjava
+        //set this fragments details
+       presenter.initFrag(realm,sharedPreferences, ((ActivityMain) getActivity()).getMovieID());
     }
-
+        //((ActivityMain) getActivity())
     @Override
     public void onStop() {
         super.onStop();
-        presenter.stopCompositeSubscription(); // for realm + rxjava
     }
 
     @Override
@@ -168,24 +156,52 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setData(MovieInfo movieInfo) {
-            retainedMovieInfo = movieInfo;
-
+    public void setData(RealmMovieInfo movieInfo) {
             ((ActivityMain) getActivity()).getSupportActionBar().setTitle("Movie Details");
             linearLayout.setVisibility(View.VISIBLE);
-            title.setText(movieInfo.getTitle());
-            plot.setText(movieInfo.getOverview());
-            userRating.setText("" + String.valueOf(movieInfo.getVoteAverage()) + "/10");
-            releaseDate.setText(movieInfo.getReleaseDate().substring(0, 4));
+                title.setText(movieInfo.getTitle());
+                plot.setText(movieInfo.getOverview());
+                userRating.setText("" + String.valueOf(movieInfo.getVoteAverage()) + "/10");
+                releaseDate.setText(movieInfo.getReleaseDate().substring(0, 4));
 
-            String imageUrl = "http://image.tmdb.org/t/p/w185/" + movieInfo.getPosterPath();
-            Glide.with(this)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .placeholder(R.drawable.placeholderdrawable)
-                    .fitCenter()
-                    .into(image);
+                String imageUrl = "http://image.tmdb.org/t/p/w185/" + movieInfo.getPosterPath();
+                Glide.with(this)
+                        .load(imageUrl)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .placeholder(R.drawable.placeholderdrawable)
+                        .fitCenter()
+                        .into(image);
+    }
+
+    @Override
+    public void setRealmData(RealmReturnedMovie realmReturnedMovie){
+
+        ((ActivityMain) getActivity()).getSupportActionBar().setTitle("Movie Details");
+        favoriteStarButton.setEnabled(false);
+        favoriteStarButton.setImageDrawable(getResources().getDrawable(R.drawable.button_pressed));
+
+        //set realmMovieInfo fields to views
+        linearLayout.setVisibility(View.VISIBLE);
+        title.setText(realmReturnedMovie.getRealmMovieInfo().getTitle());
+        plot.setText(realmReturnedMovie.getRealmMovieInfo().getOverview());
+        userRating.setText("" + String.valueOf(realmReturnedMovie.getRealmMovieInfo().getVoteAverage()) + "/10");
+        releaseDate.setText(realmReturnedMovie.getRealmMovieInfo().getReleaseDate().substring(0, 4));
+        String imagePath = "http://image.tmdb.org/t/p/w185/" + realmReturnedMovie.getRealmMovieInfo().getPosterPath();//load file pile
+        Glide.with(this)
+                .load(imagePath)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.placeholderdrawable)
+                .fitCenter()
+                .into(image);
+
+        //set realmMedia fields to views
+
+
+        //set realmReview fields to views
+
+
     }
 
     @Override
@@ -212,12 +228,23 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
             detailMediaLinearLayout.addView(linkTextView);
             linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
         }
+
+        loadState++;
+        if (loadState>1 && !saved) {
+            favoriteStarButton.setEnabled(true);
+        }
+
     }
 
     @Override
     public void setDataReview(List<MovieReview> resultsReview) {
         reviewsAdapter.setReviews(resultsReview);
         reviewsAdapter.notifyDataSetChanged();
+        loadState++;
+        if (loadState>1 && !saved ) {
+            favoriteStarButton.setEnabled(true);
+        }
+
     }
 
 
@@ -233,6 +260,11 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     }
 
+    @Override
+    public RealmMovieInfo getRealmMovieInfo() {
+        return ((ActivityMain) getActivity()).getCurrentResult();
+    }
+
 
     @Override
     public void showLoading() {
@@ -246,11 +278,15 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         Toast.makeText(getActivity(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
     }
 
+
+
     @OnClick(R.id.favorite_star)
     public void onClickStarButton(ImageButton button){
-        //Todo: need to add wait function before alllowing presenter.addNewMovie() to be called.
-        presenter.addNewMovie();
-        button.setPressed(true);
+        //Todo: need to add wait function before alllowing presenter.addMovieToRealm() to be called.
+        presenter.addMovieToRealm(realm);
+        button.setEnabled(false);
+        button.setImageDrawable(getResources().getDrawable(R.drawable.button_pressed));
+        saved = true;
     }
 
 

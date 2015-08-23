@@ -1,6 +1,8 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
@@ -12,7 +14,10 @@ import java.util.List;
  */
 public interface DetailsFragView extends MvpView {
 
-    public void setData(MovieInfo movieInfo);
+    public void setData(RealmMovieInfo movieInfo);
+
+    public void setRealmData (RealmReturnedMovie realmReturnedMovie);
+
 
     public void setDataMedia(List<MovieMedia> resultsMedia);
 
@@ -23,4 +28,7 @@ public interface DetailsFragView extends MvpView {
     public void showError(Throwable e);
 
     public void showSearchList();
+
+
+    public RealmMovieInfo getRealmMovieInfo();
 }

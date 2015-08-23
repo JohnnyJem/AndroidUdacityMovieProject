@@ -11,6 +11,8 @@ import android.widget.FrameLayout;
 
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
@@ -26,17 +28,17 @@ import static rx.android.app.AppObservable.bindActivity;
 
 public class ActivityMain extends AppCompatActivity {
     @Inject MovieApplication movieApplication;
-    @Inject RxBus _rxBus;
-    private CompositeSubscription _subscriptions;
+    @Inject RxBus rxBus;
+    private CompositeSubscription subscriptions;
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private SearchFragment retainedFragment;
-    private MovieInfo movieInfo;
+    private RealmMovieInfo movieInfo;
     private static final String VIEWSTATE0 = "0";
     private static final String VIEWSTATE1 = "1";
     private static final String VIEWSTATE2 = "2";
-
+    private int movieID;
 
     FrameLayout fragmentContainer;
     FrameLayout fragmentContainer1;
@@ -110,21 +112,25 @@ public class ActivityMain extends AppCompatActivity {
     public void onStart() {
         super.onStart();
        getComponent().inject(this);
-        _subscriptions = new CompositeSubscription();
-        _subscriptions
-                .add(bindActivity(this, _rxBus.toObserverable())//
+        subscriptions = new CompositeSubscription();
+        subscriptions
+                .add(bindActivity(this, rxBus.toObserverable())//
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
-                                if (event instanceof MovieInfo) {
-                                    initDetailFrag((MovieInfo) event);
+                                if (event instanceof RealmMovieInfo) {
+                                    initDetailFrag();
+                                    movieInfo = (RealmMovieInfo) event;
+                                    movieID = movieInfo.getId();
+                                }else if (event instanceof RealmReturnedMovie){
+                                    initDetailFrag();
+                                    movieID = ((RealmReturnedMovie) event).getId();
                                 }
                             }
                         }));
     }
 
-    private void initDetailFrag(MovieInfo movieInfo) {
-        this.movieInfo = movieInfo;
+    private void initDetailFrag() {
         if(getResources().getBoolean(R.bool.dual_pane)) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -146,7 +152,7 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        _subscriptions.unsubscribe();
+        subscriptions.unsubscribe();
     }
 
 
@@ -178,8 +184,12 @@ public class ActivityMain extends AppCompatActivity {
         mDrawer.openDrawer(GravityCompat.START);
     }
 
-    public MovieInfo getCurrentResult(){
+    public RealmMovieInfo getCurrentResult(){
         return movieInfo;
+    }
+
+    public int getMovieID(){
+        return  movieID;
     }
 
 }

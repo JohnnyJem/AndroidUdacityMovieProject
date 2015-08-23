@@ -1,140 +1,76 @@
 package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.model.DataService;
-import com.johnnymolina.androidudacitymovieproject.api.model.RealmDataService;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedReviews;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Info;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Media;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Returned;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Review;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
  */
 public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
     private final String TAG = getClass().getName().toString();
-
+    private final String APPLICATION_TAG = "com.johnnymolina.androidudacitymovieproject";
     MovieService movieService;
-    DataService dataService;
-    CompositeSubscription compositeSubscription;
 
-    MovieInfo movieInfo;
+    int movieID = 0;
+    RealmMovieInfo realmMovieInfo;
     List<MovieMedia> returnedMediaList;
     List<MovieReview> returnedReviewList;
 
     String previousMediaQuery;
     String previousReviewQuery;
+    boolean realmSaveState = false;
+    int LOADSTATE = 0; //Default. 1 = Media loaded. 2 = Reviews & Media loaded and available for saving to Realm;
+    private boolean movieSaveState;
 
     public DetailsFragPresenter(MovieService movieService) {
         this.movieService = movieService;
     }
 
-    public void startCompositeSubscription(Context appContext) {
-        dataService = dataService == null ? new RealmDataService(appContext) : dataService;
-        compositeSubscription = new CompositeSubscription();
-    }
-
-    public void stopCompositeSubscription() {
-        compositeSubscription.unsubscribe();
-    }
-
-    public void requestAllMovies() {
-        //grabbing a returnedList
-        Subscription subscription = dataService.returnedList().
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(
-                        new Action1<List<Returned>>() {
-                            @Override
-                            public void call(List<Returned> returnedList) {
-                                Log.d(TAG, "returnedList received with size " + returnedList.size());
-                            }
-                        },
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                Log.e(TAG, "Request all returnedList error", throwable);
-                            }
-                        }
-                );
-        if (compositeSubscription != null) {
-            compositeSubscription.add(subscription);
+    public void initFrag(Realm realm, SharedPreferences sharedPreferences, int movieID){
+        if (movieID == 0){
+            this.movieID = movieID;
         }
-    }
-
-    public void addNewMovie() {
-        //setting our Retrofit Object Models fields to an immutable POGO to be used in the RxJava stream
-        // and ultimately have its feilds set to a realm object.
-        Info info = new Info(movieInfo.getId(), movieInfo.getTitle(),  movieInfo.getPosterPath(), movieInfo.getReleaseDate(),movieInfo.getVoteAverage(), movieInfo.getOverview());
-        List<Media> medias= new ArrayList<>();
-        List<Review> reviews = new ArrayList<>();
-
-        for (MovieMedia media : returnedMediaList){
-           medias.add(new Media(media.getId(),media.getName(),media.getSite()));
-            Log.e("Media", media.getName());
+        //checking if our movieID can be found in our sharedPreferences
+        if (sharedPreferences.getInt(String.valueOf(movieID),0) > 0){
+            //note: sharedPreferences lookup is not necessary. A simple lookup of all saved RealmObjects to check if any match
+            //the given movieID would suffice, but sharedPreferences storage & lookup is part of the rubric.
+            //TODO: implement sharedPreferences and Realm Lookup
+        }else {
+            if (isViewAttached()){
+                if (getView().getRealmMovieInfo() !=null) {
+                    setDetails(getView().getRealmMovieInfo());
+                }
+            }
         }
 
-        for (MovieReview review : returnedReviewList){
-            reviews.add(new Review(review.getId(),review.getAuthor(),review.getContent(),review.getUrl()));
-            Log.e("Review", review.getAuthor());
-        }
-
-        Subscription subscription = dataService.newReturnedList(movieInfo.getId(),info,medias,reviews).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(
-                        new Action1<Returned>() {
-                            @Override
-                            public void call(Returned returnedList) {
-                                Log.d(TAG, "Issue with title " + returnedList.getInfo().getTitle() + " successfully saved");
-                                String mediaAuthor = returnedList.getMediaList().size() > 0 ? returnedList.getMediaList().get(0).getName() : "empty list";
-                                Log.e("Media", mediaAuthor);
-                                //Todo: change all set__() methods to accept these immutable objects instead.
-                            }
-                        },
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                Log.e(TAG, "Add new issue error", throwable);
-                            }
-                        }
-                );
-
-        if (compositeSubscription != null) {
-            compositeSubscription.add(subscription);
-        }
     }
 
-    public void setDetails(MovieInfo currentMovieInfo) {
+    public void setDetails(RealmMovieInfo currentMovieInfo) {
         if (isViewAttached()) {
-            if (this.movieInfo == null) {
-                this.movieInfo = currentMovieInfo;
-                //Todo: change this to reference and take as arguments the immutable pojo
+            if (this.realmMovieInfo == null) {
+                this.realmMovieInfo = currentMovieInfo;
             }
 
             getView().showSearchList();//If view IS attached then show the searchList
-            getView().setData(movieInfo);
+            getView().setData(realmMovieInfo);
+            movieID = realmMovieInfo.getId();
 
             if (returnedMediaList !=null) {
                 getView().setDataMedia(returnedMediaList);
@@ -150,7 +86,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
     }
 
         public void requestMovieMedia() {
-            String query =Integer.toString(movieInfo.getId());
+            String query =Integer.toString(realmMovieInfo.getId());
             previousMediaQuery = query;
 
             //update View
@@ -159,13 +95,14 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             }
             //we ask the presenter to perform a search with a query
             movieService.movieMediaRequest(query, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
-                    .delay(5, TimeUnit.SECONDS) //wait 5 seconds
+                    .delay(3, TimeUnit.SECONDS) //wait 5 seconds
                     .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
                     .subscribe(new Subscriber<ReturnedMedia>() {//Attaching subscriber of type _________Response to the Observable
                         @Override
                         public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                             if (isViewAttached()) {
                                 getView().showSearchList();//If view IS attached then show the searchList
+                                LOADSTATE++;
                             }
                         }
 
@@ -188,7 +125,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         }
 
     public void requestMovieReviews() {
-        String queryReview =Integer.toString(movieInfo.getId());
+        String queryReview =Integer.toString(realmMovieInfo.getId());
         previousReviewQuery = queryReview;
         //update View
         if (isViewAttached()) {
@@ -196,13 +133,14 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
         }
         //we ask the presenter to perform a search with a query
         movieService.movieReviewRequest(queryReview, NetworkModule.API_KEY) //subscribes to the Observable provided by Retrofit and lets the View know what to display
-                .delay(5, TimeUnit.SECONDS) //wait 5 seconds
+                .delay(3, TimeUnit.SECONDS) //wait 5 seconds
                 .observeOn(AndroidSchedulers.mainThread())  //Declaring that our observable be observed on the main thread
                 .subscribe(new Subscriber<ReturnedReviews>() {//Attaching subscriber of type _________Response to the Observable
                     @Override
                     public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                         if (isViewAttached()) {
                             getView().showSearchList();//If view IS attached then show the searchList
+                            LOADSTATE++;
                         }
                     }
 
@@ -224,5 +162,12 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 });
     }
 
+    public void addMovieToRealm(Realm realm) {
+        if (LOADSTATE > 1) {
+
+        }else{
+            Log.d("AddMovie", "Failed: All Movie components not yet loaded. ");
+        }
+    }
 
 }

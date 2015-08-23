@@ -19,6 +19,7 @@ import com.dd.realmbrowser.RealmBrowser;
 import com.dd.realmbrowser.RealmFilesActivity;
 import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
+import com.johnnymolina.androidudacitymovieproject.adapters.RealmMovieAdapter;
 import com.johnnymolina.androidudacitymovieproject.adapters.SearchListAdapter;
 import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
@@ -37,6 +38,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import io.realm.Realm;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
@@ -47,7 +49,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
     @Inject MovieService movieService;
     @Inject MovieApplication movieApplication;
-    @Inject RxBus _rxBus;
+    @Inject RxBus rxBus;
+    @Inject Realm realm;
 
     @Bind(R.id.search_box) EditText searchBox;
     @Bind(R.id.rv_movie_search_images) RecyclerView recyclerView;
@@ -55,6 +58,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
     AppComponent appComponent;
     SearchListAdapter searchListAdapter;
+    RealmMovieAdapter realmMovieAdapter;
     // using a retained fragment to hold the ViewState
     // and the adapter for the RecyclerView
 
@@ -93,16 +97,31 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
             recyclerView.setHasFixedSize(true);
             searchListAdapter = searchListAdapter == null ? new SearchListAdapter() : searchListAdapter;
-            recyclerView.setAdapter(searchListAdapter);
-
+            realmMovieAdapter = realmMovieAdapter == null ? new RealmMovieAdapter() : realmMovieAdapter;
+           // recyclerView.setAdapter(searchListAdapter);
             recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    if (_rxBus.hasObservers()) {
-                        Log.e("RX","hasObservers");
-                                _rxBus.send(searchListAdapter.getMovies().get(position));
-                    }else{
-                        Log.e("RX","Does not hasObservers");
+                    if (rxBus.hasObservers()) {
+                        Log.e("RX", "pushed RealmReturnedMovieObject");
+                        //sending either a RealmMovieInfo object or RealmReturnedMovie object through rxBus depending on the
+                        //type of adapter that is currently being viewed.
+                        if (searchListAdapter != null && searchListAdapter.getMovies().get(position) instanceof MovieInfo) {
+                            MovieInfo movieInfo = searchListAdapter.getMovies().get(position);
+                            RealmMovieInfo realmMovieInfo = new RealmMovieInfo();
+                            realmMovieInfo.setId(movieInfo.getId());
+                            realmMovieInfo.setTitle(movieInfo.getTitle());
+                            realmMovieInfo.setPosterPath(movieInfo.getPosterPath());
+                            realmMovieInfo.setOverview(movieInfo.getOverview());
+                            realmMovieInfo.setReleaseDate(movieInfo.getReleaseDate());
+                            realmMovieInfo.setVoteAverage(movieInfo.getVoteAverage());
+                            rxBus.send(realmMovieInfo);
+                        } else if (realmMovieAdapter != null && realmMovieAdapter.getRealmMovies().get(position) instanceof RealmReturnedMovie) {
+                            RealmReturnedMovie realmReturnedMovie = realmMovieAdapter.getRealmMovies().get(position);
+                            rxBus.send(realmReturnedMovie);
+                        }
+                    } else {
+                        Log.e("RX", "Does not hasObservers");
                     }
                 }
 
@@ -118,14 +137,13 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Override
     public void onStart() {
         super.onStart();
-        presenter.setMovies();
-        //presenter.startCompositeSubscription(movieApplication);
+        presenter.setMovies(realm);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //presenter.stopCompositeSubscription();
+
     }
 
     //Injecting our dagger dependencies
@@ -155,8 +173,16 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
     @Override
     public void setData(List<MovieInfo> list) {
+        recyclerView.setAdapter(searchListAdapter);
         searchListAdapter.setMovies(list);
         searchListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setRealmData(List<RealmReturnedMovie> realmList) {
+        recyclerView.setAdapter(realmMovieAdapter);
+        realmMovieAdapter.setRealmMovies(realmList);
+        realmMovieAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -171,6 +197,8 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
         setHasOptionsMenu(true);
     }
+
+
 
 
     @Override
@@ -200,6 +228,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
         String mostPopular = "most_popular";
         String highestRated = "highest_rated";
         String favorites = "favorites";
+        String realmBrowser = "realm_browser";
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -213,6 +242,10 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                 return true;
             case R.id.favorites_filter:
                 this.overflowMenuTasks(favorites);
+                return true;
+            case R.id.realm_browser:
+                this.overflowMenuTasks(realmBrowser);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -225,8 +258,12 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
             case "highest_rated":
                 presenter.searchForMovies("vote_count.desc");
                 return;
-            case"favorites":
+            case "favorites":
+                presenter.searchForRealmMovies(realm);
+                return;
+            case "realm_browser":
                 RealmFilesActivity.start(getActivity());
+                return;
             default:
                 return;
         }

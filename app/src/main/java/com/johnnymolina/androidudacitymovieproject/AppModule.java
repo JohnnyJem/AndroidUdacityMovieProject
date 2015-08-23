@@ -1,16 +1,14 @@
 package com.johnnymolina.androidudacitymovieproject;
 
-import android.app.Application;
-import android.content.Context;
+import android.content.SharedPreferences;
 
-import com.johnnymolina.androidudacitymovieproject.api.model.DataService;
-import com.johnnymolina.androidudacitymovieproject.api.model.RealmDataService;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
@@ -19,9 +17,11 @@ import dagger.Provides;
 
 @Module
 public class AppModule {
+    private final String APPLICATION_TAG = "com.johnnymolina.androidudacitymovieproject";
     private MovieApplication movieApplication;
     private RxBus _rxBus = null;
-    private DataService dataService;
+    private SharedPreferences sharedPreferences;
+    private Realm realm;
 
     public AppModule(MovieApplication movieApplication){
         this.movieApplication = movieApplication;
@@ -42,10 +42,21 @@ public class AppModule {
         return _rxBus;
     }
 
-    @Provides
-    public DataService provideDataService(MovieApplication movieApplication){
-        dataService = new RealmDataService(movieApplication);
-        return dataService;
+
+    @Provides @Singleton
+    public SharedPreferences provideSharedPreferences (MovieApplication movieApplication){
+        if (sharedPreferences == null){
+           sharedPreferences = movieApplication.getSharedPreferences(APPLICATION_TAG, movieApplication.MODE_PRIVATE);
+        }
+        return sharedPreferences;
+    }
+
+    @Provides @Singleton
+    public Realm provideRealm (MovieApplication movieApplication){
+        if (realm == null){
+            realm = Realm.getInstance(movieApplication);
+        }
+        return realm;
     }
 
 }

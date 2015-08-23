@@ -6,17 +6,16 @@ import android.util.Log;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
-import com.johnnymolina.androidudacitymovieproject.api.model.DataService;
-import com.johnnymolina.androidudacitymovieproject.api.model.RealmDataService;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedMovies;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Info;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRx.Returned;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,61 +31,45 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
     String TAG = getClass().getName().toString();
 
     MovieService movieService;
-    DataService dataService;
     CompositeSubscription compositeSubscription;
     List<MovieInfo> list;
+    List<RealmReturnedMovie> realmList;
     String previousQuery;
-
-
+    boolean isRealmAdapterActive = false;
 
     public SearchListPresenter(MovieService movieService) {
         this.movieService = movieService;
     }
 
-
-    public void startCompositeSubscription(Context appContext) {
-        dataService = dataService == null ? new RealmDataService(appContext) : dataService;
-        compositeSubscription = new CompositeSubscription();
-    }
-
-    public void stopCompositeSubscription() {
-        compositeSubscription.unsubscribe();
-    }
-
-    //to be used to request all movies that have been saved to Realm.a.k.a  users "favorite" movies.
-    public void requestAllMovies() {
-        Subscription subscription = dataService.returnedList().
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(
-                        new Action1<List<Returned>>() {
-                            @Override
-                            public void call(List<Returned> returnedList) {
-                                Log.d(TAG, "returnedList received with size " + returnedList.size());
-                            }
-                        },
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                Log.e(TAG, "Request all returnedList error", throwable);
-                            }
-                        }
-                );
-
-        if (compositeSubscription != null) {
-            //compositeSubscription.add(subscription);
-        }
-    }
-
-
-
-    public void setMovies(){
-        if (list!=null) {
+    public void setMovies(Realm realm){
+        if (list!=null && !isRealmAdapterActive) {
             getView().setData(list);
             getView().showSearchList();
-        }else{
+        }else if (!isRealmAdapterActive){
             searchForMovies(previousQuery);
         }
+
+        if (realmList !=null && isRealmAdapterActive){
+            getView().setRealmData(realmList);
+            getView().showSearchList();
+        }else if (isRealmAdapterActive){
+            //search with realm for all saved movies
+            searchForRealmMovies(realm);
+        }
+
+
+    }
+
+    public void searchForRealmMovies(Realm realm) {
+        ArrayList<RealmReturnedMovie> realmReturnedMovies = new ArrayList<>();
+        RealmResults<RealmReturnedMovie> query = realm.where(RealmReturnedMovie.class).findAll();
+        for (RealmReturnedMovie p : query){
+            realmReturnedMovies.add(p);
+        }
+        realmList = realmReturnedMovies;
+        getView().setRealmData(realmList);
+        getView().showSearchList();
+        isRealmAdapterActive = true;
     }
 
     public void searchForMovies(String query) {
@@ -104,6 +87,7 @@ public class SearchListPresenter extends MvpBasePresenter<SearchListView> {
                     public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                         if (isViewAttached()) {
                             getView().showSearchList();//If view IS attached then show the searchList
+                            isRealmAdapterActive = false;
                         }
                     }
 
