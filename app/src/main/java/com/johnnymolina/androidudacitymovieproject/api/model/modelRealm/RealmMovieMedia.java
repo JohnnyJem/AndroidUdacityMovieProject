@@ -1,7 +1,6 @@
 package com.johnnymolina.androidudacitymovieproject.api.model.modelRealm;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Johnny on 8/13/2015.
@@ -10,7 +9,7 @@ public class RealmMovieMedia extends RealmObject{
 
     private String id;
     private String name;
-    private String site;
+    private String key;
 
     public String getId() {
         return id;
@@ -28,12 +27,12 @@ public class RealmMovieMedia extends RealmObject{
         this.name = name;
     }
 
-    public String getSite() {
-        return site;
+    public String getKey() {
+        return key;
     }
 
-    public void setSite(String site) {
-        this.site = site;
+    public void setKey(String key) {
+        this.key = key;
     }
 
 

@@ -7,6 +7,9 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieReview;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieReview;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedReviews;
@@ -26,12 +29,15 @@ import rx.android.schedulers.AndroidSchedulers;
 public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
     private final String TAG = getClass().getName().toString();
     private final String APPLICATION_TAG = "com.johnnymolina.androidudacitymovieproject";
+    private final String MOVIE_ID = "MOVIE_ID";
     MovieService movieService;
 
     int movieID = 0;
     RealmMovieInfo realmMovieInfo;
     List<MovieMedia> returnedMediaList;
     List<MovieReview> returnedReviewList;
+
+    RealmReturnedMovie realmReturnedMovie;
 
     String previousMediaQuery;
     String previousReviewQuery;
@@ -52,9 +58,21 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             //note: sharedPreferences lookup is not necessary. A simple lookup of all saved RealmObjects to check if any match
             //the given movieID would suffice, but sharedPreferences storage & lookup is part of the rubric.
             //TODO: implement sharedPreferences and Realm Lookup
+            Log.i("LOOKUP", String.valueOf(movieID) + " exists in SharedPreferences");
+            RealmReturnedMovie query = realm.where(RealmReturnedMovie.class)
+                    .equalTo("id",movieID)
+                    .findFirst();
+            RealmReturnedMovie realmReturnedMovie = new RealmReturnedMovie();
+            realmReturnedMovie.setRealmMovieInfo(query.getRealmMovieInfo());
+            realmReturnedMovie.setRealmMediaList(query.getRealmMediaList());
+            realmReturnedMovie.setRealmReviewList(query.getRealmReviewList());
+            if (isViewAttached()) {
+                setRealmDetails(realmReturnedMovie); // change this to lookup from realm
+            }
         }else {
             if (isViewAttached()){
                 if (getView().getRealmMovieInfo() !=null) {
+                    Log.i("LOOKUP",String.valueOf(movieID)+" DOES NOT exist in SharedPreferences");
                     setDetails(getView().getRealmMovieInfo());
                 }
             }
@@ -68,8 +86,9 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 this.realmMovieInfo = currentMovieInfo;
             }
 
-            getView().showSearchList();//If view IS attached then show the searchList
+
             getView().setData(realmMovieInfo);
+            getView().showSearchList();//If view IS attached then show the searchList
             movieID = realmMovieInfo.getId();
 
             if (returnedMediaList !=null) {
@@ -83,6 +102,14 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 requestMovieReviews();
             }
         }
+    }
+
+    public void setRealmDetails(RealmReturnedMovie currentRealmMovie){
+        if (this.realmReturnedMovie == null){
+            this.realmReturnedMovie = currentRealmMovie;
+        }
+        getView().setRealmData(this.realmReturnedMovie);
+        getView().showSearchList();
     }
 
         public void requestMovieMedia() {
@@ -162,11 +189,44 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 });
     }
 
-    public void addMovieToRealm(Realm realm) {
-        if (LOADSTATE > 1) {
-
+    public void addMovieToRealm(Realm realm, SharedPreferences sharedPreferences) {
+        if (LOADSTATE > 1 && movieID > 0) {
+                sharedPreferences.edit().putInt(String.valueOf(movieID), movieID).commit();
+                realm.beginTransaction();
+                RealmReturnedMovie returnedMovie = realm.createObject(RealmReturnedMovie.class);
+                returnedMovie.setId(movieID);
+                RealmMovieInfo movieInfo = realm.copyToRealm(realmMovieInfo);
+                returnedMovie.setRealmMovieInfo(movieInfo);
+                //returnedMovie.getRealmMovieInfo().setId(movieID);
+                //returnedMovie.getRealmMovieInfo().setTitle(realmMovieInfo.getTitle());
+                //returnedMovie.getRealmMovieInfo().setPosterPath(realmMovieInfo.getPosterPath());
+                //returnedMovie.getRealmMovieInfo().setReleaseDate(realmMovieInfo.getReleaseDate());
+                //returnedMovie.getRealmMovieInfo().setVoteAverage(realmMovieInfo.getVoteAverage());
+                //returnedMovie.getRealmMovieInfo().setOverview(realmMovieInfo.getOverview());
+                if (returnedMediaList!=null){
+                    for (MovieMedia returnedMedia : returnedMediaList){
+                        RealmMovieMedia movieMedia = new RealmMovieMedia();
+                        movieMedia.setId(returnedMedia.getId());
+                        movieMedia.setName(returnedMedia.getName());
+                        movieMedia.setKey(returnedMedia.getKey());
+                        RealmMovieMedia realmMovieMedia = realm.copyToRealm(movieMedia);
+                        returnedMovie.getRealmMediaList().add(realmMovieMedia);
+                    }
+                }
+                if (returnedReviewList!=null){
+                    for (MovieReview returnedReview : returnedReviewList){
+                        RealmMovieReview movieReview = new RealmMovieReview();
+                        movieReview.setId(returnedReview.getId());
+                        movieReview.setAuthor(returnedReview.getAuthor());
+                        movieReview.setUrl(returnedReview.getUrl());
+                        movieReview.setContent(returnedReview.getContent());
+                        RealmMovieReview realmMovieReview = realm.copyToRealm(movieReview);
+                        returnedMovie.getRealmReviewList().add(realmMovieReview);
+                    }
+                }
+                realm.commitTransaction();
         }else{
-            Log.d("AddMovie", "Failed: All Movie components not yet loaded. ");
+            Log.d("AddMovie", "Failed: All Movie components not yet loaded. Try again "); //TODO: make this notification into a snackbar
         }
     }
 

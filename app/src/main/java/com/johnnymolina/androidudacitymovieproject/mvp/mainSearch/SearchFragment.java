@@ -103,10 +103,10 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                 @Override
                 public void onItemClick(View view, int position) {
                     if (rxBus.hasObservers()) {
-                        Log.e("RX", "pushed RealmReturnedMovieObject");
+
                         //sending either a RealmMovieInfo object or RealmReturnedMovie object through rxBus depending on the
-                        //type of adapter that is currently being viewed.
-                        if (searchListAdapter != null && searchListAdapter.getMovies().get(position) instanceof MovieInfo) {
+                        //type of adapter that is currently being viewed.'
+                        if (searchListAdapter != null && searchListAdapter.getMovies().get(position) instanceof MovieInfo && recyclerView.getAdapter() == searchListAdapter) {
                             MovieInfo movieInfo = searchListAdapter.getMovies().get(position);
                             RealmMovieInfo realmMovieInfo = new RealmMovieInfo();
                             realmMovieInfo.setId(movieInfo.getId());
@@ -116,9 +116,11 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                             realmMovieInfo.setReleaseDate(movieInfo.getReleaseDate());
                             realmMovieInfo.setVoteAverage(movieInfo.getVoteAverage());
                             rxBus.send(realmMovieInfo);
-                        } else if (realmMovieAdapter != null && realmMovieAdapter.getRealmMovies().get(position) instanceof RealmReturnedMovie) {
+                            Log.e("RX", "pushed RealmReturnedMovieInfoObject "+movieInfo.getId() );
+                        } else if (realmMovieAdapter != null && realmMovieAdapter.getRealmMovies().get(position) instanceof RealmReturnedMovie && recyclerView.getAdapter() == realmMovieAdapter) {
                             RealmReturnedMovie realmReturnedMovie = realmMovieAdapter.getRealmMovies().get(position);
                             rxBus.send(realmReturnedMovie);
+                            Log.e("RX", "pushed RealmReturnedMovieObject " + realmReturnedMovie.getId());
                         }
                     } else {
                         Log.e("RX", "Does not hasObservers");

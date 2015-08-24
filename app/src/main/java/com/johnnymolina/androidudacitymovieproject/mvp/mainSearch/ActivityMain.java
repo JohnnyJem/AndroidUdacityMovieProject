@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -119,12 +120,14 @@ public class ActivityMain extends AppCompatActivity {
                             @Override
                             public void call(Object event) {
                                 if (event instanceof RealmMovieInfo) {
-                                    initDetailFrag();
                                     movieInfo = (RealmMovieInfo) event;
                                     movieID = movieInfo.getId();
-                                }else if (event instanceof RealmReturnedMovie){
+                                    Log.i("movieID","Current movieID: "+ movieID);
                                     initDetailFrag();
+                                }else if (event instanceof RealmReturnedMovie){
                                     movieID = ((RealmReturnedMovie) event).getId();
+                                    Log.i("movieID","Current movieID: "+ movieID);
+                                    initDetailFrag();
                                 }
                             }
                         }));

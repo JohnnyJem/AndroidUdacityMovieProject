@@ -283,11 +283,12 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @OnClick(R.id.favorite_star)
     public void onClickStarButton(ImageButton button){
         //Todo: need to add wait function before alllowing presenter.addMovieToRealm() to be called.
-        presenter.addMovieToRealm(realm);
+        presenter.addMovieToRealm(realm, sharedPreferences);
         button.setEnabled(false);
         button.setImageDrawable(getResources().getDrawable(R.drawable.button_pressed));
         saved = true;
     }
+
 
 
 
