@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +23,15 @@ import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.dd.realmbrowser.RealmFilesActivity;
 import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.adapters.ReviewsAdapter;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieMedia;
+import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieReview;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
@@ -58,13 +64,13 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
     @Bind(R.id.detail_media_linear_layout) LinearLayout detailMediaLinearLayout;
+    @Bind(R.id.detail_review_linear_layout) LinearLayout detailReviewLinearLayout;
     @Bind(R.id.detail_title) TextView title;
     @Bind(R.id.detail_plot) TextView plot;
     @Bind(R.id.detail_user_rating) TextView userRating;
     @Bind(R.id.detail_release_date) TextView releaseDate;
     @Bind(R.id.detail_image) ImageView image;
     @Bind(R.id.favorite_star) ImageButton favoriteStarButton;
-    @Bind(R.id.rv_movie_reviews) RecyclerView recyclerView;
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
 
     int loadState = 0;
@@ -73,12 +79,19 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     // and the adapter for the RecyclerView
     ReviewsAdapter reviewsAdapter;
     int savedMovieID;
+    String savedFirstMediaLink;
+
+    //Injecting our dagger dependencies
+    @Override
+    protected void injectDependencies() {
+        ((MovieApplication) getActivity().getApplication()).getAppComponent().inject(this);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -89,47 +102,25 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //setup our reviewsRecyclerView and reviewsAdapter
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        reviewsAdapter = reviewsAdapter == null ? new ReviewsAdapter() : reviewsAdapter;
-        recyclerView.setAdapter(reviewsAdapter);
-        //workaround to get recyclerview working while nested inside a scrollview.
-        //An alternative option would be to make a RecyclerView.Adapter that takes a header as well as different rows.
-        //The header would expand the first part of the screens layout.
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                int action = e.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_MOVE:
-                        rv.getParent().requestDisallowInterceptTouchEvent(true);
-                        break;
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-        });
-    }
-
-
-    //Injecting our dagger dependencies
-    @Override
-    protected void injectDependencies() {
-        ((MovieApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         //set this fragments details
-       presenter.initFrag(realm,sharedPreferences, ((ActivityMain) getActivity()).getMovieID());
+        if (savedMovieID > 0){
+            presenter.initFrag(realm, sharedPreferences, savedMovieID);
+        }else {
+            savedMovieID = ((ActivityMain) getActivity()).getMovieID();
+            presenter.initFrag(realm, sharedPreferences, ((ActivityMain) getActivity()).getMovieID());
+        }
     }
-        //((ActivityMain) getActivity())
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -197,11 +188,39 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
                 .into(image);
 
         //set realmMedia fields to views
-
+            if (detailMediaLinearLayout.getChildCount()==0) {
+                if (realmReturnedMovie.getRealmMediaList().get(0)!=null){
+                    savedFirstMediaLink = "http://www.youtube.com/watch?v=" + realmReturnedMovie.getRealmMediaList().get(0).getKey();
+                }
+            for (final RealmMovieMedia movieMedia : realmReturnedMovie.getRealmMediaList()) {
+                TextView linkTextView = new TextView(getActivity());
+                linkTextView.setText(movieMedia.getName());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(0, 5, 0, 1);
+                linkTextView.setLayoutParams(lp);
+                detailMediaLinearLayout.addView(linkTextView);
+                linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
+                linkTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieMedia.getKey())));
+                    }
+                });
+            }
+        }
 
         //set realmReview fields to views
-
-
+        if (detailReviewLinearLayout.getChildCount()==0) {
+            for (RealmMovieReview movieReview : realmReturnedMovie.getRealmReviewList()) {
+                TextView linkTextView = new TextView(getActivity());
+                linkTextView.setText(movieReview.getAuthor() + "\n" + movieReview.getContent());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(0, 5, 0, 1);
+                linkTextView.setLayoutParams(lp);
+                detailReviewLinearLayout.addView(linkTextView);
+                linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
+            }
+        }
     }
 
     @Override
@@ -221,12 +240,6 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
                     }
                 });
             }
-        }else{
-            TextView linkTextView = new TextView(getActivity());
-            linkTextView.setText("No media links available");
-            linkTextView.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            detailMediaLinearLayout.addView(linkTextView);
-            linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
         }
 
         loadState++;
@@ -237,9 +250,20 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void setDataReview(List<MovieReview> resultsReview) {
-        reviewsAdapter.setReviews(resultsReview);
-        reviewsAdapter.notifyDataSetChanged();
+    public void setDataReview(List<MovieReview> movieReviews) {
+        if (detailReviewLinearLayout.getChildCount()==0) {
+            for (MovieReview movieReview : movieReviews) {
+                TextView linkTextView = new TextView(getActivity());
+                linkTextView.setText(movieReview.getAuthor() + "\n" + movieReview.getContent());
+
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(0,5,0,1);
+                linkTextView.setLayoutParams(lp);
+                detailReviewLinearLayout.addView(linkTextView);
+                linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
+            }
+        }
+
         loadState++;
         if (loadState>1 && !saved ) {
             favoriteStarButton.setEnabled(true);
@@ -278,8 +302,6 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
         Toast.makeText(getActivity(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
     }
 
-
-
     @OnClick(R.id.favorite_star)
     public void onClickStarButton(ImageButton button){
         //Todo: need to add wait function before alllowing presenter.addMovieToRealm() to be called.
@@ -290,7 +312,35 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_details_share, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String shareFirstVideo = "share_first_video";
+        switch (item.getItemId()) {
+            case R.id.share_first_video:
+                this.overflowMenuTasks(shareFirstVideo);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    public void overflowMenuTasks(String itemName){
+        switch (itemName) {
+            case "share_first_video":
+               if (detailMediaLinearLayout.getChildCount()!=0 && savedFirstMediaLink!=null){
+                   Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                   sharingIntent.setType("text/plain");
+                   sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                   sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, savedFirstMediaLink);
+                   startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+               }
+                return;
+        }
+    }
 
 }

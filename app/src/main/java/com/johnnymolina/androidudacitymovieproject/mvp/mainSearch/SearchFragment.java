@@ -77,8 +77,6 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((ActivityMain)getActivity()).getSupportActionBar().setTitle("Movie Details");
-
         RealmBrowser.getInstance().addRealmModel(RealmReturnedMovie.class,RealmMovieInfo.class, RealmMovieMedia.class,
                 RealmMovieReview.class);
 
@@ -106,6 +104,7 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
                         //sending either a RealmMovieInfo object or RealmReturnedMovie object through rxBus depending on the
                         //type of adapter that is currently being viewed.'
+                        //must move this into a method in this frag's presenter. This current implementation violates MVP. This should be a "dumb" view and not manipulate data.
                         if (searchListAdapter != null && searchListAdapter.getMovies().get(position) instanceof MovieInfo && recyclerView.getAdapter() == searchListAdapter) {
                             MovieInfo movieInfo = searchListAdapter.getMovies().get(position);
                             RealmMovieInfo realmMovieInfo = new RealmMovieInfo();

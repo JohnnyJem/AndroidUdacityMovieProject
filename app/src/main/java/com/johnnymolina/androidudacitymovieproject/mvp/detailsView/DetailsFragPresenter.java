@@ -41,17 +41,15 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
 
     String previousMediaQuery;
     String previousReviewQuery;
-    boolean realmSaveState = false;
     int LOADSTATE = 0; //Default. 1 = Media loaded. 2 = Reviews & Media loaded and available for saving to Realm;
-    private boolean movieSaveState;
 
     public DetailsFragPresenter(MovieService movieService) {
         this.movieService = movieService;
     }
 
-    public void initFrag(Realm realm, SharedPreferences sharedPreferences, int movieID){
+    public void initFrag(Realm realm, SharedPreferences sharedPreferences, int providedMovieID){
         if (movieID == 0){
-            this.movieID = movieID;
+            this.movieID = providedMovieID;
         }
         //checking if our movieID can be found in our sharedPreferences
         if (sharedPreferences.getInt(String.valueOf(movieID),0) > 0){
@@ -71,13 +69,15 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             }
         }else {
             if (isViewAttached()){
-                if (getView().getRealmMovieInfo() !=null) {
+                if (getView().getRealmMovieInfo() != null) {
+                    realmMovieInfo = getView().getRealmMovieInfo();
                     Log.i("LOOKUP",String.valueOf(movieID)+" DOES NOT exist in SharedPreferences");
-                    setDetails(getView().getRealmMovieInfo());
+                    setDetails(realmMovieInfo);
+                }else if(realmMovieInfo!=null){
+                    setDetails(realmMovieInfo);
                 }
             }
         }
-
     }
 
     public void setDetails(RealmMovieInfo currentMovieInfo) {
@@ -85,8 +85,6 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
             if (this.realmMovieInfo == null) {
                 this.realmMovieInfo = currentMovieInfo;
             }
-
-
             getView().setData(realmMovieInfo);
             getView().showSearchList();//If view IS attached then show the searchList
             movieID = realmMovieInfo.getId();
@@ -197,12 +195,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 returnedMovie.setId(movieID);
                 RealmMovieInfo movieInfo = realm.copyToRealm(realmMovieInfo);
                 returnedMovie.setRealmMovieInfo(movieInfo);
-                //returnedMovie.getRealmMovieInfo().setId(movieID);
-                //returnedMovie.getRealmMovieInfo().setTitle(realmMovieInfo.getTitle());
-                //returnedMovie.getRealmMovieInfo().setPosterPath(realmMovieInfo.getPosterPath());
-                //returnedMovie.getRealmMovieInfo().setReleaseDate(realmMovieInfo.getReleaseDate());
-                //returnedMovie.getRealmMovieInfo().setVoteAverage(realmMovieInfo.getVoteAverage());
-                //returnedMovie.getRealmMovieInfo().setOverview(realmMovieInfo.getOverview());
+
                 if (returnedMediaList!=null){
                     for (MovieMedia returnedMedia : returnedMediaList){
                         RealmMovieMedia movieMedia = new RealmMovieMedia();

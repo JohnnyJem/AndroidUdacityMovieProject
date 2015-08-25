@@ -65,11 +65,12 @@ public class ActivityMain extends AppCompatActivity {
 
         if (savedInstanceState != null) { // saved instance state, fragment may exist
             // look up the instance that already exists by tag
+
             if(!(getResources().getBoolean(R.bool.dual_pane))) {
                 fragmentContainer1.setVisibility(View.VISIBLE);
             }
             if(getResources().getBoolean(R.bool.dual_pane)) {
-
+                Log.d("FRAG", "Looking up previous frag");
                 if (getSupportFragmentManager().findFragmentByTag(VIEWSTATE2) != null) {
                     getSupportFragmentManager()
                             .beginTransaction()
@@ -93,6 +94,7 @@ public class ActivityMain extends AppCompatActivity {
         } else if (savedInstanceState == null) {
             //If no fragment present then create a new one and place it in our main UI.
             //Check if we are in dual pane mode or not.
+            Log.d("FRAG", "Creating new Frag");
             if(getResources().getBoolean(R.bool.dual_pane)){
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -122,11 +124,9 @@ public class ActivityMain extends AppCompatActivity {
                                 if (event instanceof RealmMovieInfo) {
                                     movieInfo = (RealmMovieInfo) event;
                                     movieID = movieInfo.getId();
-                                    Log.i("movieID","Current movieID: "+ movieID);
                                     initDetailFrag();
                                 }else if (event instanceof RealmReturnedMovie){
                                     movieID = ((RealmReturnedMovie) event).getId();
-                                    Log.i("movieID","Current movieID: "+ movieID);
                                     initDetailFrag();
                                 }
                             }
