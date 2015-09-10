@@ -14,7 +14,6 @@ import com.johnnymolina.androidudacitymovieproject.AppComponent;
 import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmReturnedMovie;
-import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.detailsView.DetailsFrag;
 import com.johnnymolina.androidudacityspotifyproject.R;
@@ -41,15 +40,13 @@ public class ActivityMain extends AppCompatActivity {
     private static final String VIEWSTATE2 = "2";
     private int movieID;
 
-    FrameLayout fragmentContainer;
     FrameLayout fragmentContainer1;
+    FrameLayout fragmentContainer2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_search);
-        fragmentContainer = (FrameLayout) findViewById(R.id.fragmentContainer);
-        fragmentContainer1 = (FrameLayout) findViewById(R.id.fragmentContainer1);
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -60,35 +57,37 @@ public class ActivityMain extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_launcher);
         ab.setDisplayHomeAsUpEnabled(true);
 
-       fragmentContainer = (FrameLayout) findViewById(R.id.fragmentContainer);
        fragmentContainer1 = (FrameLayout) findViewById(R.id.fragmentContainer1);
+       fragmentContainer2 = (FrameLayout) findViewById(R.id.fragmentContainer2);
 
         if (savedInstanceState != null) { // saved instance state, fragment may exist
             // look up the instance that already exists by tag
 
-            if(!(getResources().getBoolean(R.bool.dual_pane))) {
-                fragmentContainer1.setVisibility(View.VISIBLE);
-            }
             if(getResources().getBoolean(R.bool.dual_pane)) {
-                Log.d("FRAG", "Looking up previous frag");
+                fragmentContainer2.setVisibility(View.VISIBLE);
                 if (getSupportFragmentManager().findFragmentByTag(VIEWSTATE2) != null) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
-                            .replace(R.id.fragmentContainer1, getSupportFragmentManager().findFragmentByTag(VIEWSTATE2))
+                            .replace(R.id.fragmentContainer1, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                            .replace(R.id.fragmentContainer2, getSupportFragmentManager().findFragmentByTag(VIEWSTATE2))
                             .commit();
                 } else {
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
-                                .replace(R.id.fragmentContainer1, new DetailsFrag(), VIEWSTATE2)
+                                .replace(R.id.fragmentContainer1, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
                                 .commit();
                 }
             }else {
+                if (getSupportFragmentManager().findFragmentByTag(VIEWSTATE2) != null) {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                        .replace(R.id.fragmentContainer1, getSupportFragmentManager().findFragmentByTag(VIEWSTATE1))
+                        .replace(R.id.fragmentContainer2, getSupportFragmentManager().findFragmentByTag(VIEWSTATE2))
                         .commit();
+                    fragmentContainer1.setVisibility(View.GONE);
+                    fragmentContainer2.setVisibility(View.VISIBLE);
+                }
+
             }
 
         } else if (savedInstanceState == null) {
@@ -98,14 +97,12 @@ public class ActivityMain extends AppCompatActivity {
             if(getResources().getBoolean(R.bool.dual_pane)){
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, new SearchFragment(), VIEWSTATE1)
-                        .replace(R.id.fragmentContainer1, new DetailsFrag(),VIEWSTATE2)
-                        .addToBackStack(VIEWSTATE2)
+                        .replace(R.id.fragmentContainer1, new SearchFragment(), VIEWSTATE1)
                         .commit();
             }else{
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, new SearchFragment(),VIEWSTATE1)
+                        .replace(R.id.fragmentContainer1, new SearchFragment(),VIEWSTATE1)
                         .commit();
             }
         }
@@ -137,17 +134,17 @@ public class ActivityMain extends AppCompatActivity {
         if(getResources().getBoolean(R.bool.dual_pane)) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer1, new DetailsFrag(), VIEWSTATE2)
+                    .replace(R.id.fragmentContainer2, new DetailsFrag(), VIEWSTATE2)
                     .addToBackStack(VIEWSTATE2)
                     .commit();
         }else{
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer1, new DetailsFrag(), VIEWSTATE2)
+                    .replace(R.id.fragmentContainer2, new DetailsFrag(), VIEWSTATE2)
                     .addToBackStack(VIEWSTATE2)
                     .commit();
-            fragmentContainer.setVisibility(View.GONE);
-            fragmentContainer1.setVisibility(View.VISIBLE);
+            fragmentContainer1.setVisibility(View.GONE);
+            fragmentContainer2.setVisibility(View.VISIBLE);
         }
     }
 
@@ -172,12 +169,11 @@ public class ActivityMain extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0 ) {
             getSupportFragmentManager().popBackStackImmediate();
-            if (!(getResources().getBoolean(R.bool.dual_pane))){
-                fragmentContainer.setVisibility(View.VISIBLE);
+            if (!(getResources().getBoolean(R.bool.dual_pane)) ){
+                fragmentContainer1.setVisibility(View.VISIBLE);
             }
-
         }else {
             super.onBackPressed();
         }

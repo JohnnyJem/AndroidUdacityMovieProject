@@ -25,13 +25,13 @@
             android:orientation="horizontal">
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/fragmentContainer"
+            android:id="@+id/fragmentContainer1"
             android:layout_width="297dp"
             android:layout_height="match_parent"
             android:foregroundGravity="left"/>
 
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/fragmentContainer1"
+                android:id="@+id/fragmentContainer2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:foregroundGravity="right"/>

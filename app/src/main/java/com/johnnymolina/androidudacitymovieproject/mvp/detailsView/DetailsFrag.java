@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Movie
 import com.johnnymolina.androidudacitymovieproject.eventBus.RxBus;
 import com.johnnymolina.androidudacitymovieproject.mvp.mainSearch.ActivityMain;
 import com.johnnymolina.androidudacityspotifyproject.R;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     @Inject RxBus rxBus;
     @Inject SharedPreferences sharedPreferences;
     @Inject Realm realm;
-
+    @Inject OkHttpClient okHttpClient;
 
     @Bind(R.id.detail_linear_layout) LinearLayout linearLayout;
     @Bind(R.id.detail_media_linear_layout) LinearLayout detailMediaLinearLayout;
@@ -100,13 +102,8 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         //set this fragments details
         if (savedMovieID > 0){
             presenter.initFrag(realm, sharedPreferences, savedMovieID);
@@ -114,16 +111,6 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
             savedMovieID = ((ActivityMain) getActivity()).getMovieID();
             presenter.initFrag(realm, sharedPreferences, ((ActivityMain) getActivity()).getMovieID());
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -167,18 +154,17 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @Override
     public void setRealmData(RealmReturnedMovie realmReturnedMovie){
-
         ((ActivityMain) getActivity()).getSupportActionBar().setTitle("Movie Details");
-        favoriteStarButton.setEnabled(false);
         favoriteStarButton.setImageDrawable(getResources().getDrawable(R.drawable.button_pressed));
+        favoriteStarButton.setEnabled(false);
 
-        //set realmMovieInfo fields to views
+        //set realmMovieInfo fields to views along with saved image.
         linearLayout.setVisibility(View.VISIBLE);
         title.setText(realmReturnedMovie.getRealmMovieInfo().getTitle());
         plot.setText(realmReturnedMovie.getRealmMovieInfo().getOverview());
         userRating.setText("" + String.valueOf(realmReturnedMovie.getRealmMovieInfo().getVoteAverage()) + "/10");
         releaseDate.setText(realmReturnedMovie.getRealmMovieInfo().getReleaseDate().substring(0, 4));
-        String imagePath = "http://image.tmdb.org/t/p/w185/" + realmReturnedMovie.getRealmMovieInfo().getPosterPath();//load file pile
+        String imagePath = movieApplication.getFilesDir() + realmReturnedMovie.getRealmMovieInfo().getPosterPath();//load file pile
         Glide.with(this)
                 .load(imagePath)
                 .asBitmap()
@@ -255,9 +241,8 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
             for (MovieReview movieReview : movieReviews) {
                 TextView linkTextView = new TextView(getActivity());
                 linkTextView.setText(movieReview.getAuthor() + "\n" + movieReview.getContent());
-
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                lp.setMargins(0,5,0,1);
+                lp.setMargins(0, 5, 0, 1);
                 linkTextView.setLayoutParams(lp);
                 detailReviewLinearLayout.addView(linkTextView);
                 linkTextView.setTextColor(getResources().getColor(R.color.primary_dark_material_light));
@@ -304,17 +289,17 @@ public class DetailsFrag extends MvpViewStateFragment<DetailsFragView,DetailsFra
 
     @OnClick(R.id.favorite_star)
     public void onClickStarButton(ImageButton button){
-        //Todo: need to add wait function before alllowing presenter.addMovieToRealm() to be called.
-        presenter.addMovieToRealm(realm, sharedPreferences);
-        button.setEnabled(false);
+        presenter.addMovieToRealm(movieApplication,realm, sharedPreferences);
         button.setImageDrawable(getResources().getDrawable(R.drawable.button_pressed));
+        button.setEnabled(false);
         saved = true;
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_details_share, menu);
+        if (getActivity().findViewById(R.id.fragmentContainer2).getVisibility() == View.VISIBLE) {
+            inflater.inflate(R.menu.menu_details_share, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

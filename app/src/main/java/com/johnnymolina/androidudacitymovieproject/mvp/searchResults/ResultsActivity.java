@@ -6,7 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
 import com.johnnymolina.androidudacityspotifyproject.R;
-
+//placeholder for potential future searchbarResultsActivity
 public class ResultsActivity extends ActionBarActivity {
 
     @Override

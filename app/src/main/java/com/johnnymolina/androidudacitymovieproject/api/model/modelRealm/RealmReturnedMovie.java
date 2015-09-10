@@ -23,6 +23,14 @@ public class RealmReturnedMovie extends RealmObject {
         this.id = id;
     }
 
+    public RealmMovieInfo getRealmMovieInfo() {
+        return realmMovieInfo;
+    }
+
+    public void setRealmMovieInfo(RealmMovieInfo realmMovieInfos) {
+        this.realmMovieInfo = realmMovieInfos;
+    }
+
     public RealmList<RealmMovieMedia> getRealmMediaList() {
         return realmMediaList;
     }
@@ -39,12 +47,6 @@ public class RealmReturnedMovie extends RealmObject {
         this.realmReviewList = realmReviewList;
     }
 
-    public RealmMovieInfo getRealmMovieInfo() {
-        return realmMovieInfo;
-    }
 
-    public void setRealmMovieInfo(RealmMovieInfo realmMovieInfos) {
-        this.realmMovieInfo = realmMovieInfos;
-    }
 
 }

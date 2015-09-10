@@ -2,8 +2,10 @@ package com.johnnymolina.androidudacitymovieproject.mvp.detailsView;
 
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.johnnymolina.androidudacitymovieproject.MovieApplication;
 import com.johnnymolina.androidudacitymovieproject.api.MovieService;
 import com.johnnymolina.androidudacitymovieproject.api.NetworkModule;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRealm.RealmMovieInfo;
@@ -14,8 +16,15 @@ import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.Movie
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedMedia;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.ReturnedReviews;
 import com.johnnymolina.androidudacitymovieproject.api.model.modelRetrofit.MovieMedia;
+import com.koushikdutta.async.future.Future;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +40,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
     private final String APPLICATION_TAG = "com.johnnymolina.androidudacitymovieproject";
     private final String MOVIE_ID = "MOVIE_ID";
     MovieService movieService;
+    Future<File> downloading;
 
     int movieID = 0;
     RealmMovieInfo realmMovieInfo;
@@ -141,7 +151,6 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                         @Override
                         public void onNext(ReturnedMedia movieMediaRequestResponse) {
                             returnedMediaList = movieMediaRequestResponse.getResultsMedia();
-                            //Todo: convert this Retrofit object into an immutable pojo too
                             if (isViewAttached()) {
                                 getView().setDataMedia(returnedMediaList);
                             }
@@ -187,12 +196,28 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 });
     }
 
-    public void addMovieToRealm(Realm realm, SharedPreferences sharedPreferences) {
+    public void addMovieToRealm(final MovieApplication movieApplication, Realm realm, SharedPreferences sharedPreferences) {
         if (LOADSTATE > 1 && movieID > 0) {
                 sharedPreferences.edit().putInt(String.valueOf(movieID), movieID).commit();
                 realm.beginTransaction();
                 RealmReturnedMovie returnedMovie = realm.createObject(RealmReturnedMovie.class);
                 returnedMovie.setId(movieID);
+
+                downloading = Ion.with(movieApplication)
+                        .load("http://image.tmdb.org/t/p/w185/" + realmMovieInfo.getPosterPath())
+                        .write(new File(movieApplication.getFilesDir(),realmMovieInfo.getPosterPath()))
+                        .setCallback(new FutureCallback<File>() {
+                            @Override
+                            public void onCompleted(Exception e, File file) {
+                                if (e != null) {
+                                    Toast.makeText(movieApplication, "Error downloading image file" , Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                // download done...
+                                // do stuff with the File or error
+                            }
+                        });
+
                 RealmMovieInfo movieInfo = realm.copyToRealm(realmMovieInfo);
                 returnedMovie.setRealmMovieInfo(movieInfo);
 
@@ -206,6 +231,7 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                         returnedMovie.getRealmMediaList().add(realmMovieMedia);
                     }
                 }
+
                 if (returnedReviewList!=null){
                     for (MovieReview returnedReview : returnedReviewList){
                         RealmMovieReview movieReview = new RealmMovieReview();
@@ -219,8 +245,10 @@ public class DetailsFragPresenter extends MvpBasePresenter<DetailsFragView> {
                 }
                 realm.commitTransaction();
         }else{
-            Log.d("AddMovie", "Failed: All Movie components not yet loaded. Try again "); //TODO: make this notification into a snackbar
+            Log.d("AddMovie", "Failed: All Movie components have not yet loaded."); //TODO: make this notification into a snackbar
         }
     }
+
+
 
 }

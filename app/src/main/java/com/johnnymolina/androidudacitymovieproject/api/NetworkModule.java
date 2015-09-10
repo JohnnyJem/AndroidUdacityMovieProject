@@ -31,12 +31,10 @@ import retrofit.converter.GsonConverter;
  */
 @Module
 public class NetworkModule {
-    public static String API_KEY="cc1c2ce2a16823ab8ea4bb70470d6324";//cc1c2ce2a16823ab8ea4bb70470d6
+    public static String API_KEY="";//see readme for API key
     public static String HTTP_REQUEST_DISCOVER="http://api.themoviedb.org";
     public static final String PRODUCTION_API_URL = "http://image.tmdb.org/t/p/w185//";
     public static String BASE_URL="http://image.tmdb.org/t/p/";
-
-
 
 
     @Provides
