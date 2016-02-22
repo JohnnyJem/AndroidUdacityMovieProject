@@ -10,6 +10,7 @@ Provide your Movie Database API Key in the String API_KEY found in the NetworkMo
 * Material Design
 * Loading animations on start & screen orientation
 * RecyclerView 
+* ButterKnife for field and method binding for Android views
 
 ### Network API 
 * Retrofit to query REST API databse
