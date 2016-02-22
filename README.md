@@ -1,5 +1,23 @@
-# AndroidUdacityMovieProject
+# Popular Movies
+Project #1 & 2 for Android Nanodegree
 
-API KEY for package com.johnnymolina.androidudacitymovieproject.api in the NetworkModule.class:
-cc1c2ce2a16823ab8ea4bb70470d6324
+## Build/Install
+Provide your Movie Database API Key in the String API_KEY found in the NetworkModule.class
+
+## Implementations
+
+### UI
+* Material Design
+* Loading animations on start & screen orientation
+* RecyclerView 
+
+### Network API 
+* Retrofit to query REST API databse
+* RxJava for asychronous calls
+
+### Data Persistance
+* Realm used for local Database
+* Mosby for Model-View-Presenter framework to handle screen orientation changes with retained fragment
+* Dagger 2 use for dependency-injection framework
+
 
