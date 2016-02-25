@@ -1,11 +1,13 @@
 # Popular Movies
 Project #1 & 2 for Android Nanodegree
 
-## Build/Install
+Getting Started
+---------------
 Provide your Movie Database API Key in the String API_KEY found in the NetworkModule.class
+This sample uses the Gradle build system. To build this project, use the "gradlew build" command or use "Import Project" in Android Studio.
 
-## Implementations
-
+Implementations
+---------------
 ### UI
 * Material Design
 * Loading animations on start & screen orientation
