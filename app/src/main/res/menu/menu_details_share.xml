@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.johnnymolina.androidudacitymovieproject.mvp.searchResults.ResultsActivity">
+    tools:context="com.johnnymolina.popularmovies.mvp.searchResults.ResultsActivity">
     <item android:id="@+id/share_first_video"
         android:icon="@drawable/open_in_new"
         android:title="@string/share_first_video"
