@@ -32,8 +32,8 @@ android {
     }
 }
 repositories {
-    maven {url "https://clojars.org/repo/"}
     mavenCentral()
+    maven {url "https://clojars.org/repo/"}
     jcenter()
 }
 
@@ -53,7 +53,7 @@ dependencies {
 
     //Model-View-Presenter + convenience libraries
     compile 'frankiesardo:icepick:3.0.2'
-    provided 'frankiesardo:icepick-processor:3.0.2'
+    provided 'frankiesardo:icepick-processor:3.0.2' //uses clojars
     apt 'frankiesardo:icepick-processor:3.0.2'
     apt 'com.hannesdorfmann.fragmentargs:processor:2.1.0'
     compile 'com.github.frankiesardo:auto-parcel:0.3'
@@ -69,12 +69,11 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.6.0'
     compile 'com.koushikdutta.ion:ion:2.+'
 
-
-
     //Reactive Extensions - https://github.com/ReactiveX/RxAndroid/wiki
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.trello:rxlifecycle:0.5.0'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
     //compile 'com.trello:rxlifecycle-components:0.5.0' //only use to get templates for RxActivity
     //Database
     compile 'io.realm:realm-android:0.80.0'

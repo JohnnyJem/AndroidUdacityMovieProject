@@ -66,7 +66,6 @@ public class RealmMovieAdapter extends RecyclerView.Adapter<RealmMovieAdapter.Vi
                 .load(imageUrl)
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.placeholderdrawable)
                 .fitCenter()
                 .into(holder.image);
     }

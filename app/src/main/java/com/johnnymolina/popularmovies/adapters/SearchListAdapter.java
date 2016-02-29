@@ -9,9 +9,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.johnnymolina.popularmovies.api.model.modelRetrofit.MovieInfo;
-import com.johnnymolina.popularmovies.extended.AutofitRecyclerView;
 import com.johnnymolina.popularmovies.R;
+import com.johnnymolina.popularmovies.api.model.modelRetrofit.MovieInfo;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ import butterknife.ButterKnife;
 /**
  * Created by fahim on 4/20/15.
  */
-public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAdapter.ViewHolder> {
+public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.ViewHolder> {
 
     Glide glide;
     private List<MovieInfo> movies;
@@ -69,7 +68,6 @@ public class SearchListAdapter extends AutofitRecyclerView.Adapter<SearchListAda
                 .load(imageUrl)
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.drawable.placeholderdrawable)
                 .fitCenter()
                 .into(holder.image);
     }

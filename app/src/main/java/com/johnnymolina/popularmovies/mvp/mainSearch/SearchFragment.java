@@ -19,10 +19,12 @@ import com.dd.realmbrowser.RealmBrowser;
 import com.dd.realmbrowser.RealmFilesActivity;
 import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestoreableViewState;
-import com.johnnymolina.popularmovies.adapters.RealmMovieAdapter;
-import com.johnnymolina.popularmovies.adapters.SearchListAdapter;
 import com.johnnymolina.popularmovies.AppComponent;
 import com.johnnymolina.popularmovies.MovieApplication;
+import com.johnnymolina.popularmovies.R;
+import com.johnnymolina.popularmovies.adapters.RealmMovieAdapter;
+import com.johnnymolina.popularmovies.adapters.SearchListAdapter;
+import com.johnnymolina.popularmovies.api.MovieService;
 import com.johnnymolina.popularmovies.api.model.modelRealm.RealmMovieInfo;
 import com.johnnymolina.popularmovies.api.model.modelRealm.RealmMovieMedia;
 import com.johnnymolina.popularmovies.api.model.modelRealm.RealmMovieReview;
@@ -30,8 +32,6 @@ import com.johnnymolina.popularmovies.api.model.modelRealm.RealmReturnedMovie;
 import com.johnnymolina.popularmovies.api.model.modelRetrofit.MovieInfo;
 import com.johnnymolina.popularmovies.eventBus.RxBus;
 import com.johnnymolina.popularmovies.extended.RecyclerItemClickListener;
-import com.johnnymolina.popularmovies.R;
-import com.johnnymolina.popularmovies.api.MovieService;
 
 import java.util.List;
 
@@ -77,34 +77,40 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RealmBrowser.getInstance().addRealmModel(RealmReturnedMovie.class,RealmMovieInfo.class, RealmMovieMedia.class,
+        RealmBrowser.getInstance().addRealmModel(
+                RealmReturnedMovie.class,
+                RealmMovieInfo.class,
+                RealmMovieMedia.class,
                 RealmMovieReview.class);
 
     }
 
+//TODO: feat:Scaling custom font based on dpi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-           if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+           if(getActivity().getResources().getConfiguration().orientation
+                   == Configuration.ORIENTATION_PORTRAIT){
+               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
            }
            else{
-               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
            }
 
-            recyclerView.setHasFixedSize(true);
             searchListAdapter = searchListAdapter == null ? new SearchListAdapter() : searchListAdapter;
             realmMovieAdapter = realmMovieAdapter == null ? new RealmMovieAdapter() : realmMovieAdapter;
-           // recyclerView.setAdapter(searchListAdapter);
-            recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+
+            recyclerView.addOnItemTouchListener(
+                    new RecyclerItemClickListener(getActivity(), recyclerView,
+                            new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
                     if (rxBus.hasObservers()) {
-
-                        //sending either a RealmMovieInfo object or RealmReturnedMovie object through rxBus depending on the
-                        //type of adapter that is currently being viewed.'
-                        //must move this into a method in this frag's presenter. This current implementation violates MVP. This should be a "dumb" view and not manipulate data.
+                        //send RealmMovieInfo or RealmReturnedMovie through rxBus depending on the
+                        //type of adapter that is currently being viewed.
+                        //must move this into a method in this frag's presenter.
+                        // This current implementation violates MVP. This should be a "dumb" view and not manipulate data.
                         if (searchListAdapter != null && searchListAdapter.getMovies().get(position) instanceof MovieInfo && recyclerView.getAdapter() == searchListAdapter) {
                             MovieInfo movieInfo = searchListAdapter.getMovies().get(position);
                             RealmMovieInfo realmMovieInfo = new RealmMovieInfo();
@@ -131,8 +137,6 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
 
                 }
             }));
-
-
     }
 
     @Override
@@ -144,22 +148,20 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Override
     public void onStop() {
         super.onStop();
-
     }
 
-    //Injecting our dagger dependencies
     @Override protected void injectDependencies() {
         ((MovieApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Override
-    public SearchListPresenter createPresenter() {
-        return new SearchListPresenter(movieService);
+    protected int getLayoutRes() {
+        return R.layout.fragment_search;
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.fragment_search;
+    public SearchListPresenter createPresenter() {
+        return new SearchListPresenter(movieService);
     }
 
     @Override
@@ -170,6 +172,11 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     @Override
     public void onNewViewStateInstance() {
         showSearchList();
+    }
+
+    @Override
+    public SearchListViewState getViewState() {
+        return (SearchListViewState) super.getViewState();
     }
 
     @Override
@@ -187,22 +194,6 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
     }
 
     @Override
-    public SearchListViewState getViewState() {
-        return (SearchListViewState) super.getViewState();
-    }
-
-    @Override
-
-    public void showSearchList() {
-        getViewState().setStateShowSearchList();
-        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
-        setHasOptionsMenu(true);
-    }
-
-
-
-
-    @Override
     public void showLoading() {
         getViewState().setStateShowLoading();
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
@@ -217,6 +208,12 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
         Toast.makeText(movieApplication, "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void showSearchList() {
+        getViewState().setStateShowSearchList();
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -269,7 +266,5 @@ public class SearchFragment extends MvpViewStateFragment<SearchListView,SearchLi
                 return;
         }
     }
-
-
 
 }

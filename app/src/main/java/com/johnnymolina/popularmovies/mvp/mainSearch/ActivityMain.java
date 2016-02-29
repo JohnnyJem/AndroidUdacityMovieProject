@@ -36,7 +36,6 @@ public class ActivityMain extends AppCompatActivity implements ActivityLifecycle
     private CompositeSubscription subscriptions;
     private final BehaviorSubject<ActivityEvent> lifecycleSubject = BehaviorSubject.create();
 
-
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private SearchFragment retainedFragment;
